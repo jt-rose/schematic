@@ -9,7 +9,7 @@ defmodule Schematic.Repo.Migrations.CreateTableColumns do
       add :deleted, :boolean, default: false, null: false
       add :deleted_at, :utc_datetime
       add :options, :map
-      add :table_id, references(:database_tables, on_delete: :nothing), null: false
+      add :table_id, references(:database_tables, on_delete: :delete_all), null: false
 
       timestamps()
     end

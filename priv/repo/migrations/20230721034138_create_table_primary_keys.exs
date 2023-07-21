@@ -9,8 +9,10 @@ defmodule Schematic.Repo.Migrations.CreateTablePrimaryKeys do
       timestamps()
     end
 
-    create unique_index(:table_primary_keys, [:database_table_id, :table_column_id],
-             name: :unique_table_and_column_constraint
+    # a unique constraint for table IDs will not be used
+    # to allow for composite primary keys
+    create unique_index(:table_primary_keys, [:table_column_id],
+             name: :unique_column_id_constraint
            )
   end
 end

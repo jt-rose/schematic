@@ -14,6 +14,6 @@ defmodule Schematic.TablePrimaryKeys.TablePrimaryKey do
     table_primary_key
     |> cast(attrs, [])
     |> validate_required([])
-    |> unique_constraint(:unique_table_and_column_pk, name: :unique_table_and_column_constraint)
+    |> unique_constraint(:unique_column_pk, name: :unique_column_id_constraint)
   end
 end

@@ -11,12 +11,9 @@ defmodule Schematic.Repo.Migrations.CreateDatabaseTables do
       add :project_database_id, references(:project_databases, on_delete: :delete_all),
         null: false
 
-      add :pk, references(:table_columns, on_delete: :nilify_all)
-
       timestamps()
     end
 
     create index(:database_tables, [:project_database_id])
-    create index(:database_tables, [:pk])
   end
 end

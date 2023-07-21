@@ -8,7 +8,6 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
     field :project_database_id, :id
-    field :pk, :id
 
     timestamps()
   end

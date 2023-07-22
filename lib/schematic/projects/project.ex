@@ -18,6 +18,6 @@ defmodule Schematic.Projects.Project do
   def changeset(project, attrs) do
     project
     |> cast(attrs, [:name, :description, :deleted, :deleted_at, :public])
-    |> validate_required([:name, :description, :deleted, :deleted_at, :public])
+    |> validate_required([:name, :description, :public])
   end
 end

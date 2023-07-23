@@ -21,7 +21,10 @@ defmodule Schematic.Projects.Project do
   @doc false
   def changeset(project, attrs) do
     project
-    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :public])
-    |> validate_required([:name, :description, :public])
+    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :public, :owner_id, :group_id])
+    |> validate_required([:name])
   end
+
+  # TODO: if owner deletes account but other members still present, transfer ownership
+  # TODO: otherwise, delete project(s)
 end

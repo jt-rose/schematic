@@ -13,13 +13,24 @@ defmodule Schematic.TableColumns.TableColumn do
     belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
     has_one :table_primary_key, Schematic.TablePrimaryKeys.TablePrimaryKey
 
+    # TODO: embed_schema :options, %{}
+    # TODO: add db unique constraint for column name + table_id
+
     timestamps()
   end
 
   @doc false
   def changeset(table_column, attrs) do
     table_column
-    |> cast(attrs, [:column_name, :data_type, :description, :deleted, :deleted_at, :options])
-    |> validate_required([:column_name, :data_type, :description, :deleted, :deleted_at, :options])
+    |> cast(attrs, [
+      :column_name,
+      :data_type,
+      :description,
+      :deleted,
+      :deleted_at,
+      :options,
+      :database_table_id
+    ])
+    |> validate_required([:column_name, :database_table_id])
   end
 end

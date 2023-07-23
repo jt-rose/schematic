@@ -18,7 +18,7 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
   @doc false
   def changeset(database_table, attrs) do
     database_table
-    |> cast(attrs, [:name, :description, :deleted, :deleted_at])
-    |> validate_required([:name, :description, :deleted, :deleted_at])
+    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :project_database_id])
+    |> validate_required([:name, :project_database_id])
   end
 end

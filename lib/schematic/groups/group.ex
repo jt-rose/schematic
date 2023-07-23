@@ -3,7 +3,7 @@ defmodule Schematic.Groups.Group do
   import Ecto.Changeset
 
   schema "groups" do
-    field :active, :boolean, default: false
+    field :active, :boolean, default: true
     field :name, :string
     field :public, :boolean, default: false
     field :description, :string
@@ -20,7 +20,7 @@ defmodule Schematic.Groups.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :public, :active])
-    |> validate_required([:name, :description, :deleted, :deleted_at, :public, :active])
+    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :public, :active, :owner_id])
+    |> validate_required([:name])
   end
 end

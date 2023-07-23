@@ -15,7 +15,7 @@ defmodule Schematic.GroupMembers.GroupMember do
   @doc false
   def changeset(group_member, attrs) do
     group_member
-    |> cast(attrs, [:group_id, :member_id, :active, :permissions])
-    |> validate_required([:active, :permissions])
+    |> cast(attrs, [:active, :permissions, :group_id, :member_id])
+    |> validate_required([:active, :permissions, :group_id, :member_id])
   end
 end

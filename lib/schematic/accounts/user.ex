@@ -8,8 +8,8 @@ defmodule Schematic.Accounts.User do
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
-    has_many :groups, Schematic.Groups.Group, foreign_key: :owner_id
-    has_many :group_members, Schematic.GroupMembers.GroupMember, foreign_key: :member_id
+    has_many :group_ownerships, Schematic.Groups.Group, foreign_key: :owner_id
+    has_many :group_memberships, Schematic.GroupMembers.GroupMember, foreign_key: :member_id
     has_many :projects, Schematic.Projects.Project, foreign_key: :owner_id
 
     timestamps()

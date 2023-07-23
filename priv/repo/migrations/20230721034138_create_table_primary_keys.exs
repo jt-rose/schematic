@@ -3,8 +3,8 @@ defmodule Schematic.Repo.Migrations.CreateTablePrimaryKeys do
 
   def change do
     create table(:table_primary_keys) do
-      add :database_table_id, references(:database_tables, on_delete: :delete_all)
-      add :table_column_id, references(:table_columns, on_delete: :delete_all)
+      add :database_table_id, references(:database_tables, on_delete: :delete_all), null: false
+      add :table_column_id, references(:table_columns, on_delete: :delete_all), null: false
 
       timestamps()
     end

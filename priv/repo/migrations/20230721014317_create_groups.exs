@@ -9,7 +9,7 @@ defmodule Schematic.Repo.Migrations.CreateGroups do
       add :deleted_at, :utc_datetime
       add :public, :boolean, default: false, null: false
       add :active, :boolean, default: true, null: false
-      add :owner_id, references(:users, on_delete: :nilify_all), null: false
+      add :owner_id, references(:users, on_delete: :nilify_all)
 
       timestamps()
     end

@@ -7,7 +7,7 @@ defmodule Schematic.Repo.Migrations.CreateProjectDatabases do
       add :description, :text
       add :deleted, :boolean, default: false, null: false
       add :deleted_at, :utc_datetime
-      add :project_id, references(:projects, on_delete: :delete_all)
+      add :project_id, references(:projects, on_delete: :delete_all), null: false
 
       timestamps()
     end

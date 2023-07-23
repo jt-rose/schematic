@@ -3,8 +3,8 @@ defmodule Schematic.TablePrimaryKeys.TablePrimaryKey do
   import Ecto.Changeset
 
   schema "table_primary_keys" do
-    field :database_table_id, :id
-    field :table_column_id, :id
+    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
+    belongs_to :table_column, Schematic.TableColumns.TableColumn
 
     timestamps()
   end

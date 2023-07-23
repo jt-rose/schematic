@@ -7,7 +7,10 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
     field :description, :string
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
-    field :project_database_id, :id
+
+    belongs_to :project_database, Schematic.ProjectDatabases.ProjectDatabase
+    has_many :table_columns, Schematic.TableColumns.TableColumn
+    has_many :table_primary_keys, Schematic.TablePrimaryKeys.TablePrimaryKey
 
     timestamps()
   end

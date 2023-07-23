@@ -9,7 +9,9 @@ defmodule Schematic.TableColumns.TableColumn do
     field :column_name, :string
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
-    field :table_id, :id
+
+    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
+    has_one :table_primary_key, Schematic.TablePrimaryKeys.TablePrimaryKey
 
     timestamps()
   end

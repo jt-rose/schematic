@@ -9,11 +9,11 @@ defmodule Schematic.Repo.Migrations.CreateTableColumns do
       add :deleted, :boolean, default: false, null: false
       add :deleted_at, :utc_datetime
       add :options, :map
-      add :table_id, references(:database_tables, on_delete: :delete_all), null: false
+      add :database_table_id, references(:database_tables, on_delete: :delete_all), null: false
 
       timestamps()
     end
 
-    create index(:table_columns, [:table_id])
+    create index(:table_columns, [:database_table_id])
   end
 end

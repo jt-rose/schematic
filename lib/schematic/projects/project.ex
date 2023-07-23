@@ -8,8 +8,12 @@ defmodule Schematic.Projects.Project do
     field :description, :string
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
-    field :owner_id, :id
-    field :group_id, :id
+
+    belongs_to :owner, Schematic.Accounts.User, foreign_key: :owner_id
+    belongs_to :group, Schematic.Groups.Group
+
+    has_many :project_databases, Schematic.ProjectDatabases.ProjectDatabase,
+      foreign_key: :project_id
 
     timestamps()
   end

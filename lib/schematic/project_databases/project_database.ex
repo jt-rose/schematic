@@ -7,7 +7,9 @@ defmodule Schematic.ProjectDatabases.ProjectDatabase do
     field :description, :string
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
-    field :project_id, :id
+
+    belongs_to :project, Schematic.Projects.Project, foreign_key: :project_id
+    has_many :database_tables, Schematic.DatabaseTables.DatabaseTable
 
     timestamps()
   end

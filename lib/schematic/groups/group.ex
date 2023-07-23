@@ -9,7 +9,10 @@ defmodule Schematic.Groups.Group do
     field :description, :string
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
-    field :owner_id, :id
+
+    belongs_to :owner, Schematic.Accounts.User, foreign_key: :owner_id
+    has_many :members, Schematic.GroupMembers.GroupMember, foreign_key: :member_id
+    has_many :projects, Schematic.Projects.Project
 
     timestamps()
   end

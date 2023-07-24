@@ -10,6 +10,7 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+alias Mix.Tasks.Phx.Gen.Schema
 alias Schematic.Repo
 
 alias Schematic.Accounts
@@ -27,12 +28,24 @@ alias Schematic.GroupMembers.GroupMember
 alias Schematic.ProjectDatabases
 alias Schematic.ProjectDatabases.ProjectDatabase
 
+alias Schematic.DatabaseTables
+alias Schematic.DatabaseTables.DatabaseTable
+
+alias Schematic.TableColumns
+alias Schematic.TableColumns.TableColumn
+
+alias Schematic.TablePrimaryKeys
+alias Schematic.TablePrimaryKeys.TablePrimaryKey
+
 # clear previous data
 Repo.delete_all(User)
 Repo.delete_all(Project)
 Repo.delete_all(GroupMember)
 Repo.delete_all(Group)
 Repo.delete_all(ProjectDatabase)
+Repo.delete_all(DatabaseTable)
+Repo.delete_all(TableColumn)
+Repo.delete_all(TablePrimaryKey)
 
 # register users
 {:ok, jr} = Accounts.register_user(%{email: "jr@example.com", password: "Secret123!!!"})
@@ -76,6 +89,8 @@ IO.puts("Generated demo-project")
 IO.puts("Generated demo-database")
 
 # add tables to database
+{:ok, authors_table}
 
-# add colum(s) to table
+# add column(s) to table
+# add options to columns
 # add primary keys

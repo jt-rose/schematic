@@ -89,7 +89,17 @@ IO.puts("Generated demo-project")
 IO.puts("Generated demo-database")
 
 # add tables to database
-{:ok, authors_table}
+{:ok, authors_table} = DatabaseTables.create_database_table(%{
+  name: "authors",
+  description: "authors past and present",
+  project_database_id: demo_db.id
+})
+
+{:ok, books_table} = DatabaseTables.create_database_table(%{
+  name: "writings",
+  description: "books, essays, and poems",
+  project_database_id: demo_db.id
+})
 
 # add column(s) to table
 # add options to columns

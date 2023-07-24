@@ -18,6 +18,6 @@ defmodule Schematic.ProjectDatabases.ProjectDatabase do
   def changeset(project_database, attrs) do
     project_database
     |> cast(attrs, [:name, :description, :deleted, :deleted_at, :project_id])
-    |> validate_required([:name, :description, :deleted, :deleted_at, :project_id])
+    |> validate_required([:name, :project_id])
   end
 end

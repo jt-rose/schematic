@@ -24,11 +24,15 @@ alias Schematic.Groups.Group
 alias Schematic.GroupMembers
 alias Schematic.GroupMembers.GroupMember
 
+alias Schematic.ProjectDatabases
+alias Schematic.ProjectDatabases.ProjectDatabase
+
 # clear previous data
 Repo.delete_all(User)
 Repo.delete_all(Project)
 Repo.delete_all(GroupMember)
 Repo.delete_all(Group)
+Repo.delete_all(ProjectDatabase)
 
 # register users
 {:ok, jr} = Accounts.register_user(%{email: "jr@example.com", password: "Secret123!!!"})
@@ -63,6 +67,15 @@ IO.puts("Registered #{length(users)} of expected 3 users")
 IO.puts("Generated demo-project")
 
 # add database to project
-# add table to database
+{:ok, demo_db} = ProjectDatabases.create_project_database(%{
+  name: "demo-db",
+  description: "a database used for demoing schematic",
+  project_id: demo_project.id
+})
+
+IO.puts("Generated demo-database")
+
+# add tables to database
+
 # add colum(s) to table
 # add primary keys

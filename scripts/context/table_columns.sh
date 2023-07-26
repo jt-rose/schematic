@@ -97,6 +97,9 @@ mix phx.gen.context TableColumns TableColumn table_columns \
     column_name:string \
     data_type:string \
     description:text \
+    is_primary_key:boolean \
+    is_nullable:boolean \
+    is_unique:boolean \
     deleted:boolean \
     deleted_at:utc_datetime \
     options:map # default, generated, foreign key, check, parameters (n, etc.), unique, nullable

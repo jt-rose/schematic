@@ -10,7 +10,6 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
 
     belongs_to :project_database, Schematic.ProjectDatabases.ProjectDatabase
     has_many :table_columns, Schematic.TableColumns.TableColumn
-    has_many :table_primary_keys, Schematic.TablePrimaryKeys.TablePrimaryKey
 
     timestamps()
   end

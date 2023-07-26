@@ -6,6 +6,9 @@ defmodule Schematic.Repo.Migrations.CreateTableColumns do
       add :column_name, :string, null: false
       add :data_type, :string
       add :description, :text
+      add :is_primary_key, :boolean, default: false, null: false
+      add :is_nullable, :boolean, default: false, null: false
+      add :is_unique, :boolean, default: false, null: false
       add :deleted, :boolean, default: false, null: false
       add :deleted_at, :utc_datetime
       add :options, :map

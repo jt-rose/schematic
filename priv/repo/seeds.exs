@@ -178,7 +178,8 @@ IO.puts("Generated demo-database")
 {:ok, books_to_authors_fk} =
   Repo.insert(%TableRelationship{
     primary_key_column_id: author_table_pk.id,
-    foreign_key_column_id: book_author.id
+    foreign_key_column_id: book_author.id,
+    on_delete: :cascade
   })
 
 # add options to columns
@@ -215,5 +216,5 @@ IO.inspect(result)
 [rels] = Repo.all(TableRelationship)
 
 IO.puts(
-  "Primary Key #{rels.primary_key_column_id} related to Foreign Key #{rels.foreign_key_column_id}"
+  "Primary Key #{rels.primary_key_column_id} related to Foreign Key #{rels.foreign_key_column_id} with on_delete policy: #{rels.on_delete}"
 )

@@ -3,9 +3,9 @@ defmodule Schematic.TableRelationships.TableRelationship do
   import Ecto.Changeset
 
   schema "table_relationships" do
-
     field :primary_key_column_id, :id
     field :foreign_key_column_id, :id
+    field :on_delete, Ecto.Enum, values: [:restrict, :cascade, :no_action, :set_null]
 
     timestamps()
   end
@@ -13,9 +13,13 @@ defmodule Schematic.TableRelationships.TableRelationship do
   @doc false
   def changeset(table_relationship, attrs) do
     table_relationship
-    |> cast(attrs, [:primary_key_column_id, :foreign_key_column_id])
-    |> validate_required([:primary_key_column_id, :foreign_key_column_id])
-    |> unique_constraint([:primary_key_column_id, :foreign_key_column_id], name: :table_relationships_pk_fk_index)
-    |> unique_constraint([:foreign_key_column_id, :primary_key_column_id], name: :table_relationships_fk_pk_index)
+    |> cast(attrs, [:primary_key_column_id, :foreign_key_column_id, :on_delete])
+    |> validate_required([:primary_key_column_id, :foreign_key_column_id, :on_delete])
+    |> unique_constraint([:primary_key_column_id, :foreign_key_column_id],
+      name: :table_relationships_pk_fk_index
+    )
+    |> unique_constraint([:foreign_key_column_id, :primary_key_column_id],
+      name: :table_relationships_fk_pk_index
+    )
   end
 end

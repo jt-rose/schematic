@@ -179,7 +179,8 @@ IO.puts("Generated demo-database")
   Repo.insert(%TableRelationship{
     primary_key_column_id: author_table_pk.id,
     foreign_key_column_id: book_author.id,
-    on_delete: :cascade
+    on_delete: :cascade,
+    on_update: :no_action
   })
 
 # add options to columns

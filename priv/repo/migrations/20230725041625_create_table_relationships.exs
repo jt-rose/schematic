@@ -6,6 +6,7 @@ defmodule Schematic.Repo.Migrations.CreateTableRelationships do
       add :primary_key_column_id, references(:table_columns, on_delete: :restrict), null: false
       add :foreign_key_column_id, references(:table_columns, on_delete: :delete_all), null: false
       add :on_delete, :string, null: false
+      add :on_update, :string, null: false
 
       timestamps()
     end

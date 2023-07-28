@@ -5,7 +5,12 @@ defmodule Schematic.TableRelationships.TableRelationship do
   schema "table_relationships" do
     field :primary_key_column_id, :id
     field :foreign_key_column_id, :id
-    field :on_delete, Ecto.Enum, values: [:restrict, :cascade, :no_action, :set_null]
+
+    field :on_delete, Ecto.Enum,
+      values: [:restrict, :cascade, :no_action, :set_null, :set_default]
+
+    field :on_update, Ecto.Enum,
+      values: [:restrict, :cascade, :no_action, :set_null, :set_default]
 
     timestamps()
   end
@@ -13,8 +18,8 @@ defmodule Schematic.TableRelationships.TableRelationship do
   @doc false
   def changeset(table_relationship, attrs) do
     table_relationship
-    |> cast(attrs, [:primary_key_column_id, :foreign_key_column_id, :on_delete])
-    |> validate_required([:primary_key_column_id, :foreign_key_column_id, :on_delete])
+    |> cast(attrs, [:primary_key_column_id, :foreign_key_column_id, :on_delete, :on_update])
+    |> validate_required([:primary_key_column_id, :foreign_key_column_id, :on_delete, :on_update])
     |> unique_constraint([:primary_key_column_id, :foreign_key_column_id],
       name: :table_relationships_pk_fk_index
     )

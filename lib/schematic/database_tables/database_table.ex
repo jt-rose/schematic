@@ -10,6 +10,7 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
 
     belongs_to :project_database, Schematic.ProjectDatabases.ProjectDatabase
     has_many :table_columns, Schematic.TableColumns.TableColumn
+    has_many :constraints, Schematic.Constraints.Constraint
 
     timestamps()
   end

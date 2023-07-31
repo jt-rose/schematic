@@ -17,6 +17,7 @@ defmodule Schematic.TableColumns.TableColumn do
     field :deleted_at, :utc_datetime
 
     belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
+    has_many :constraint_relationships, Schematic.ConstraintColumns.ConstraintColumn
 
     many_to_many :referenced_by,
                  TableColumn,

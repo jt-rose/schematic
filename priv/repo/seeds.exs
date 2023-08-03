@@ -39,7 +39,23 @@ alias Schematic.TableColumns.TableColumn
 alias Schematic.TableRelationships
 alias Schematic.TableRelationships.TableRelationship
 
+alias Schematic.Constraints
+alias Schematic.Constraints.Constraint
+
+alias Schematic.ConstraintColumns
+alias Schematic.ConstraintColumns.ConstraintColumn
+
+alias Schematic.GeneratedColumns
+alias Schematic.GeneratedColumns.GeneratedColumn
+
+alias Schematic.GeneratedInputs
+alias Schematic.GeneratedInputs.GeneratedInput
+
 # clear previous data
+Repo.delete_all(GeneratedInput)
+Repo.delete_all(GeneratedColumn)
+Repo.delete_all(Constraint)
+Repo.delete_all(ConstraintColumn)
 Repo.delete_all(TableRelationship)
 Repo.delete_all(TableColumn)
 Repo.delete_all(DatabaseTable)
@@ -133,6 +149,21 @@ IO.puts("Generated demo-database")
     database_table_id: authors_table.id
   })
 
+# used for testing the check function
+{:ok, author_first_edition_sales} =
+  Repo.insert(%TableColumn{
+    data_type: "INTEGER",
+    column_name: "first_edition_sales",
+    database_table_id: authors_table.id
+  })
+
+{:ok, author_total_sales} =
+  Repo.insert(%TableColumn{
+    data_type: "INTEGER",
+    column_name: "total_sales",
+    database_table_id: authors_table.id
+  })
+
 {:ok, author_country} =
   Repo.insert(%TableColumn{
     data_type: "VARCHAR(255)",
@@ -219,3 +250,31 @@ IO.inspect(result)
 IO.puts(
   "Primary Key #{rels.primary_key_column_id} related to Foreign Key #{rels.foreign_key_column_id} with on_delete policy: #{rels.on_delete}"
 )
+
+# insert constraints
+Repo.insert(%Constraint{
+  check_expression: "1234-5678-uuid >= 9876-5432-uuid",
+  database_table: authors_table,
+  description: "",
+  constraint_columns: [
+    %ConstraintColumn{
+      placeholder_symbol: "1234-5678-uuid",
+      table_column: author_first_edition_sales
+    },
+    %ConstraintColumn{
+      placeholder_symbol: "9876-5432-uuid",
+      table_column: author_total_sales
+    }
+  ]
+})
+
+result =
+  Repo.all(
+    from c in Constraint,
+      preload: [constraint_columns: :table_column]
+  )
+
+IO.puts("INSERTED:")
+IO.inspect(result)
+
+# set up sql-generated data

@@ -278,3 +278,28 @@ IO.puts("INSERTED:")
 IO.inspect(result)
 
 # set up sql-generated data
+Repo.insert(%GeneratedColumn{
+  database_table: authors_table,
+  description: "total sales for second editions onwards",
+  name: "author_post_first_edition_sales",
+  generation_expression: "123-uuid-456 - 456-uuid-789",
+  generated_inputs: [
+    %GeneratedInput{
+      placeholder_symbol: "123-uuid-456",
+      table_column: author_total_sales
+    },
+    %GeneratedInput{
+      placeholder_symbol: "456-uuid-789",
+      table_column: author_first_edition_sales
+    }
+  ]
+})
+
+result =
+  Repo.all(
+    from g in GeneratedColumn,
+      preload: [generated_inputs: :table_column]
+  )
+
+IO.puts("INSERTED:")
+IO.inspect(result)

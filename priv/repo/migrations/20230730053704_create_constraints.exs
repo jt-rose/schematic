@@ -11,6 +11,6 @@ defmodule Schematic.Repo.Migrations.CreateConstraints do
       timestamps()
     end
 
-    create index(:constraints, [:table_id])
+    create index(:constraints, [:database_table_id])
   end
 end

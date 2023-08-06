@@ -51,7 +51,19 @@ alias Schematic.GeneratedColumns.GeneratedColumn
 alias Schematic.GeneratedInputs
 alias Schematic.GeneratedInputs.GeneratedInput
 
+alias Schematic.SqlFunctions
+alias Schematic.SqlFunctions.SqlFunction
+
+alias Schematic.SqlTriggers
+alias Schematic.SqlTriggers.SqlTrigger
+
+alias Schematic.SqlFunctionInputs
+alias Schematic.SqlFunctionInputs.SqlFunctionInput
+
 # clear previous data
+Repo.delete_all(SqlFunctionInput)
+Repo.delete_all(SqlTrigger)
+Repo.delete_all(SqlFunction)
 Repo.delete_all(GeneratedInput)
 Repo.delete_all(GeneratedColumn)
 Repo.delete_all(Constraint)
@@ -133,7 +145,7 @@ IO.puts("Generated demo-database")
     database_table_id: authors_table.id
   })
 
-{:ok, author_table_name} =
+{:ok, author_name} =
   Repo.insert(%TableColumn{
     data_type: "VARCHAR(255)",
     column_name: "name",
@@ -299,6 +311,53 @@ result =
   Repo.all(
     from g in GeneratedColumn,
       preload: [generated_inputs: :table_column]
+  )
+
+IO.puts("INSERTED:")
+IO.inspect(result)
+
+# create sql functions
+{:ok, trim_whitespace_fn} =
+  Repo.insert(%SqlFunction{
+    name: "trim_whitespace",
+    language: :pgsql,
+    function_code: "
+  CREATE OR REPLACE FUNCTION trim_whitespace()
+  RETURNS TRIGGER
+  LANGUAGE PLPGSQL
+  AS
+$$
+BEGIN
+NEW.uuid-45-67-89 = LTRIM(NEW.uuid-45-67-89);
+RETURN NEW;
+END;
+$$
+  ",
+    project_database: demo_db
+  })
+
+# create sql triggers with function inputs
+{:ok, insert_author_trigger} =
+  Repo.insert(%SqlTrigger{
+    database_table: authors_table,
+    event: :insert,
+    level: :row,
+    name: "trim_whitespace_on_author's_name",
+    sql_function: trim_whitespace_fn,
+    timing: :before,
+    sql_function_inputs: [
+      %SqlFunctionInput{
+        placeholder_symbol: "uuid-45-67-89",
+        sql_function: trim_whitespace_fn,
+        table_column: author_name
+      }
+    ]
+  })
+
+result =
+  Repo.all(
+    from trigger in SqlTrigger,
+      preload: [:sql_function, :sql_function_inputs]
   )
 
 IO.puts("INSERTED:")

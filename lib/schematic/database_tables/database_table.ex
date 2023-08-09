@@ -11,6 +11,9 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
     belongs_to :project_database, Schematic.ProjectDatabases.ProjectDatabase
     has_many :table_columns, Schematic.TableColumns.TableColumn
     has_many :constraints, Schematic.Constraints.Constraint
+    has_many :table_indexes, Schematic.TableIndexes.TableIndex
+    
+    #TODO: many to many for index_columns?
 
     timestamps()
   end

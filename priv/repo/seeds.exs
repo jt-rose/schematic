@@ -60,7 +60,15 @@ alias Schematic.SqlTriggers.SqlTrigger
 alias Schematic.SqlFunctionInputs
 alias Schematic.SqlFunctionInputs.SqlFunctionInput
 
+alias Schematic.TableIndexes
+alias Schematic.TableIndexes.TableIndex
+
+alias Schematic.IndexColumns
+alias Schematic.IndexColumns.IndexColumn
+
 # clear previous data
+Repo.delete_all(IndexColumn)
+Repo.delete_all(TableIndex)
 Repo.delete_all(SqlFunctionInput)
 Repo.delete_all(SqlTrigger)
 Repo.delete_all(SqlFunction)
@@ -199,6 +207,13 @@ IO.puts("Generated demo-database")
   Repo.insert(%TableColumn{
     data_type: "VARCHAR(255)",
     column_name: "title",
+    database_table_id: books_table.id
+  })
+
+{:ok, book_edition} =
+  Repo.insert(%TableColumn{
+    data_type: "INTEGER",
+    column_name: "edition",
     database_table_id: books_table.id
   })
 
@@ -358,6 +373,30 @@ result =
   Repo.all(
     from trigger in SqlTrigger,
       preload: [:sql_function, :sql_function_inputs]
+  )
+
+IO.puts("INSERTED:")
+IO.inspect(result)
+
+# insert multicolumn indexes
+{:ok, unique_title_edition_index} =
+  Repo.insert(%TableIndex{
+    is_unique: true,
+    database_table: books_table,
+    index_columns: [
+      %IndexColumn{
+        table_column: book_title
+      },
+      %IndexColumn{
+        table_column: book_edition
+      }
+    ]
+  })
+
+result =
+  Repo.all(
+    from mc_idx in TableIndex,
+      preload: [:database_table, index_columns: :table_column]
   )
 
 IO.puts("INSERTED:")

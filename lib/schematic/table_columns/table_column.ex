@@ -2,6 +2,8 @@ defmodule Schematic.TableColumns.TableColumn do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.TableIndexes.TableIndex
+  alias Schematic.IndexColumns.IndexColumn
   alias Schematic.TableColumns.TableColumn
   alias Schematic.TableRelationships.TableRelationship
 
@@ -13,16 +15,16 @@ defmodule Schematic.TableColumns.TableColumn do
     field :is_primary_key, :boolean, default: false
     field :is_nullable, :boolean, default: false
     field :is_unique, :boolean, default: false
-    # is_indexed creates an explicit index for the single column
-    # a unique constraint or primary key on a single column
-    # will automatically have an index created regardless
-    # multicolumn indexes will be documented in the MultiColumnIndexes table
-    field :is_indexed, :boolean, default: false
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
     belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
     has_many :constraint_relationships, Schematic.ConstraintColumns.ConstraintColumn
+    has_many :index_columns, Schematic.IndexColumns.IndexColumn
+
+    many_to_many :table_indexes,
+                 TableIndex,
+                 join_through: IndexColumn
 
     many_to_many :referenced_by,
                  TableColumn,
@@ -50,7 +52,6 @@ defmodule Schematic.TableColumns.TableColumn do
       :is_primary_key,
       :is_nullable,
       :is_unique,
-      :is_indexed,
       :deleted,
       :deleted_at,
       :options,

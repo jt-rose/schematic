@@ -2,14 +2,15 @@ defmodule Schematic.TableIndexes.TableIndex do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.DatabaseTables.DatabaseTable
   alias Schematic.TableColumns.TableColumn
-  alias Schematic.IndexColumns.IndexColumn
+  alias Schematic.TableIndexes.IndexColumn
 
   schema "table_indexes" do
     field :is_unique, :boolean, default: false
 
-    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
-    has_many :index_columns, Schematic.IndexColumns.IndexColumn
+    belongs_to :database_table, DatabaseTable
+    has_many :index_columns, IndexColumn
 
     many_to_many :table_columns,
                  TableColumn,

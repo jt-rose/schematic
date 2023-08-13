@@ -2,13 +2,16 @@ defmodule Schematic.GeneratedColumns.GeneratedColumn do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.DatabaseTables.DatabaseTable
+  alias Schematic.GeneratedColumns.GeneratedInput
+
   schema "generated_columns" do
     field :name, :string
     field :description, :string
     field :generation_expression, :string
 
-    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
-    has_many :generated_inputs, Schematic.GeneratedInputs.GeneratedInput
+    belongs_to :database_table, DatabaseTable
+    has_many :generated_inputs, GeneratedInput
 
     timestamps()
   end

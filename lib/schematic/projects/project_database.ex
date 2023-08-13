@@ -1,6 +1,9 @@
-defmodule Schematic.ProjectDatabases.ProjectDatabase do
+defmodule Schematic.Projects.ProjectDatabase do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.Projects.Project
+  alias Schematic.DatabaseTables.DatabaseTable
 
   schema "project_databases" do
     field :name, :string
@@ -8,8 +11,8 @@ defmodule Schematic.ProjectDatabases.ProjectDatabase do
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
-    belongs_to :project, Schematic.Projects.Project, foreign_key: :project_id
-    has_many :database_tables, Schematic.DatabaseTables.DatabaseTable
+    belongs_to :project, Project, foreign_key: :project_id
+    has_many :database_tables, DatabaseTable
 
     timestamps()
   end

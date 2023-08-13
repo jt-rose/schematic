@@ -1,6 +1,10 @@
-defmodule Schematic.SqlTriggers.SqlTrigger do
+defmodule Schematic.Triggers.SqlTrigger do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.DatabaseTables.DatabaseTable
+  alias Schematic.Triggers.SqlFunction
+  alias Schematic.Triggers.SqlFunctionInput
 
   schema "sql_triggers" do
     field :name, :string
@@ -8,9 +12,9 @@ defmodule Schematic.SqlTriggers.SqlTrigger do
     field :event, Ecto.Enum, values: [:insert, :update, :delete, :truncate]
     field :timing, Ecto.Enum, values: [:before, :after, :instead_of]
 
-    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
-    belongs_to :sql_function, Schematic.SqlFunctions.SqlFunction
-    has_many :sql_function_inputs, Schematic.SqlFunctionInputs.SqlFunctionInput
+    belongs_to :database_table, DatabaseTable
+    belongs_to :sql_function, SqlFunction
+    has_many :sql_function_inputs, SqlFunctionInput
 
     timestamps()
   end

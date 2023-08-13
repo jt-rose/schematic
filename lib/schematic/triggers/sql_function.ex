@@ -1,15 +1,19 @@
-defmodule Schematic.SqlFunctions.SqlFunction do
+defmodule Schematic.Triggers.SqlFunction do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.Projects.ProjectDatabase
+  alias Schematic.Triggers.SqlFunctionInput
+  alias Schematic.Triggers.SqlTrigger
 
   schema "sql_functions" do
     field :name, :string
     field :language, Ecto.Enum, values: [:pgsql, :tcl, :perl, :python]
     field :function_code, :string
 
-    belongs_to :project_database, Schematic.ProjectDatabases.ProjectDatabase
-    has_many :sql_function_inputs, Schematic.SqlFunctionInputs.SqlFunctionInput
-    has_many :sql_triggers, Schematic.SqlTriggers.SqlTrigger
+    belongs_to :project_database, ProjectDatabase
+    has_many :sql_function_inputs, SqlFunctionInput
+    has_many :sql_triggers, SqlTrigger
 
     timestamps()
   end

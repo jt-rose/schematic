@@ -1,13 +1,17 @@
-defmodule Schematic.SqlFunctionInputs.SqlFunctionInput do
+defmodule Schematic.Triggers.SqlFunctionInput do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.TableColumns.TableColumn
+  alias Schematic.Triggers.SqlFunction
+  alias Schematic.Triggers.SqlTrigger
 
   schema "sql_function_inputs" do
     field :placeholder_symbol, :string
 
-    belongs_to :table_column, Schematic.TableColumns.TableColumn
-    belongs_to :sql_function, Schematic.SqlFunctions.SqlFunction
-    belongs_to :sql_trigger, Schematic.SqlTriggers.SqlTrigger
+    belongs_to :table_column, TableColumn
+    belongs_to :sql_function, SqlFunction
+    belongs_to :sql_trigger, SqlTrigger
 
     timestamps()
   end

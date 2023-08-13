@@ -12,7 +12,6 @@
 
 import Ecto.Query, warn: false
 
-alias Mix.Tasks.Phx.Gen.Schema
 alias Schematic.Repo
 
 alias Schematic.Accounts
@@ -20,51 +19,30 @@ alias Schematic.Accounts.User
 
 alias Schematic.Projects
 alias Schematic.Projects.Project
+alias Schematic.Projects.ProjectDatabase
 
 alias Schematic.Groups
 alias Schematic.Groups.Group
+alias Schematic.Groups.GroupMember
 
-alias Schematic.GroupMembers
-alias Schematic.GroupMembers.GroupMember
-
-alias Schematic.ProjectDatabases
-alias Schematic.ProjectDatabases.ProjectDatabase
-
-alias Schematic.DatabaseTables
 alias Schematic.DatabaseTables.DatabaseTable
 
-alias Schematic.TableColumns
 alias Schematic.TableColumns.TableColumn
 
-alias Schematic.TableRelationships
 alias Schematic.TableRelationships.TableRelationship
 
-alias Schematic.Constraints
 alias Schematic.Constraints.Constraint
+alias Schematic.Constraints.ConstraintColumn
 
-alias Schematic.ConstraintColumns
-alias Schematic.ConstraintColumns.ConstraintColumn
-
-alias Schematic.GeneratedColumns
 alias Schematic.GeneratedColumns.GeneratedColumn
+alias Schematic.GeneratedColumns.GeneratedInput
 
-alias Schematic.GeneratedInputs
-alias Schematic.GeneratedInputs.GeneratedInput
+alias Schematic.Triggers.SqlTrigger
+alias Schematic.Triggers.SqlFunction
+alias Schematic.Triggers.SqlFunctionInput
 
-alias Schematic.SqlFunctions
-alias Schematic.SqlFunctions.SqlFunction
-
-alias Schematic.SqlTriggers
-alias Schematic.SqlTriggers.SqlTrigger
-
-alias Schematic.SqlFunctionInputs
-alias Schematic.SqlFunctionInputs.SqlFunctionInput
-
-alias Schematic.TableIndexes
 alias Schematic.TableIndexes.TableIndex
-
-alias Schematic.IndexColumns
-alias Schematic.IndexColumns.IndexColumn
+alias Schematic.TableIndexes.IndexColumn
 
 # clear previous data
 Repo.delete_all(IndexColumn)
@@ -98,7 +76,7 @@ IO.puts("Registered #{length(users)} of expected 3 users")
 {:ok, group} = Groups.create_group(%{owner_id: jr.id, name: "demo-group"})
 
 {:ok, member} =
-  GroupMembers.create_group_member(%{
+  Groups.create_group_member(%{
     group_id: group.id,
     member_id: jameson.id,
     active: true,
@@ -119,7 +97,7 @@ IO.puts("Generated demo-project")
 
 # add database to project
 {:ok, demo_db} =
-  ProjectDatabases.create_project_database(%{
+  Projects.create_project_database(%{
     name: "demo-db",
     description: "a database used for demoing schematic",
     project_id: demo_project.id
@@ -401,3 +379,5 @@ result =
 
 IO.puts("INSERTED:")
 IO.inspect(result)
+
+IO.puts("\nSeeding Complete")

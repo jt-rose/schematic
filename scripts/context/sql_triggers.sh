@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mix phx.gen.context SqlTriggers SqlTrigger sql_triggers \
+mix phx.gen.context Triggers SqlTrigger sql_triggers \
     name:string \
     event:enum:insert:update:delete:truncate \
     timing:enum:before:after:instead_of \

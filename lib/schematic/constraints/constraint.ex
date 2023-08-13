@@ -2,13 +2,16 @@ defmodule Schematic.Constraints.Constraint do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.DatabaseTables.DatabaseTable
+  alias Schematic.Constraints.ConstraintColumn
+
   schema "constraints" do
     field :name, :string
     field :description, :string
     field :check_expression, :string
 
-    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
-    has_many :constraint_columns, Schematic.ConstraintColumns.ConstraintColumn
+    belongs_to :database_table, DatabaseTable
+    has_many :constraint_columns, ConstraintColumn
 
     timestamps()
   end

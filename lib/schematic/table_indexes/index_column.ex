@@ -1,10 +1,13 @@
-defmodule Schematic.IndexColumns.IndexColumn do
+defmodule Schematic.TableIndexes.IndexColumn do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.TableColumns.TableColumn
+  alias Schematic.TableIndexes.TableIndex
+
   schema "index_columns" do
-    belongs_to :table_column, Schematic.TableColumns.TableColumn
-    belongs_to :table_index, Schematic.TableIndexes.TableIndex
+    belongs_to :table_column, TableColumn
+    belongs_to :table_index, TableIndex
 
     timestamps()
   end

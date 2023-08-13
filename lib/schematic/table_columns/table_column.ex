@@ -2,8 +2,10 @@ defmodule Schematic.TableColumns.TableColumn do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.DatabaseTables.DatabaseTable
+  alias Schematic.Constraints.ConstraintColumn
   alias Schematic.TableIndexes.TableIndex
-  alias Schematic.IndexColumns.IndexColumn
+  alias Schematic.TableIndexes.IndexColumn
   alias Schematic.TableColumns.TableColumn
   alias Schematic.TableRelationships.TableRelationship
 
@@ -18,9 +20,9 @@ defmodule Schematic.TableColumns.TableColumn do
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
-    belongs_to :database_table, Schematic.DatabaseTables.DatabaseTable
-    has_many :constraint_relationships, Schematic.ConstraintColumns.ConstraintColumn
-    has_many :index_columns, Schematic.IndexColumns.IndexColumn
+    belongs_to :database_table, DatabaseTable
+    has_many :constraint_relationships, ConstraintColumn
+    has_many :index_columns, IndexColumn
 
     many_to_many :table_indexes,
                  TableIndex,

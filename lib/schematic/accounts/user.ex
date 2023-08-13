@@ -2,15 +2,19 @@ defmodule Schematic.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.Groups.Group
+  alias Schematic.Groups.GroupMember
+  alias Schematic.Projects.Project
+
   schema "users" do
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
 
-    has_many :group_ownerships, Schematic.Groups.Group, foreign_key: :owner_id
-    has_many :group_memberships, Schematic.GroupMembers.GroupMember, foreign_key: :member_id
-    has_many :projects, Schematic.Projects.Project, foreign_key: :owner_id
+    has_many :group_ownerships, Group, foreign_key: :owner_id
+    has_many :group_memberships, GroupMember, foreign_key: :member_id
+    has_many :projects, Project, foreign_key: :owner_id
 
     timestamps()
   end

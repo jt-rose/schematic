@@ -2,6 +2,10 @@ defmodule Schematic.Projects.Project do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.Accounts.User
+  alias Schematic.Groups.Group
+  alias Schematic.Projects.ProjectDatabase
+
   schema "projects" do
     field :name, :string
     field :public, :boolean, default: false
@@ -9,11 +13,10 @@ defmodule Schematic.Projects.Project do
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
-    belongs_to :owner, Schematic.Accounts.User, foreign_key: :owner_id
-    belongs_to :group, Schematic.Groups.Group
+    belongs_to :owner, User, foreign_key: :owner_id
+    belongs_to :group, Group
 
-    has_many :project_databases, Schematic.ProjectDatabases.ProjectDatabase,
-      foreign_key: :project_id
+    has_many :project_databases, ProjectDatabase, foreign_key: :project_id
 
     timestamps()
   end

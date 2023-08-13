@@ -1,13 +1,16 @@
-defmodule Schematic.GroupMembers.GroupMember do
+defmodule Schematic.Groups.GroupMember do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.Groups.Group
+  alias Schematic.Accounts.User
 
   schema "group_members" do
     field :active, :boolean, default: true
     field :permissions, Ecto.Enum, values: [:owner, :admin, :member, :readonly]
 
-    belongs_to :group, Schematic.Groups.Group
-    belongs_to :member, Schematic.Accounts.User, foreign_key: :member_id
+    belongs_to :group, Group
+    belongs_to :member, User, foreign_key: :member_id
 
     timestamps()
   end

@@ -2,6 +2,10 @@ defmodule Schematic.Groups.Group do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias Schematic.Accounts.User
+  alias Schematic.Groups.GroupMember
+  alias Schematic.Projects.Project
+
   schema "groups" do
     field :active, :boolean, default: true
     field :name, :string
@@ -10,9 +14,9 @@ defmodule Schematic.Groups.Group do
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
-    belongs_to :owner, Schematic.Accounts.User, foreign_key: :owner_id
-    has_many :members, Schematic.GroupMembers.GroupMember, foreign_key: :member_id
-    has_many :projects, Schematic.Projects.Project
+    belongs_to :owner, User, foreign_key: :owner_id
+    has_many :members, GroupMember, foreign_key: :member_id
+    has_many :projects, Project
 
     timestamps()
   end

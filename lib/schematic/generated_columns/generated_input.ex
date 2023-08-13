@@ -1,12 +1,15 @@
-defmodule Schematic.GeneratedInputs.GeneratedInput do
+defmodule Schematic.GeneratedColumns.GeneratedInput do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.TableColumns.TableColumn
+  alias Schematic.GeneratedColumns.GeneratedColumn
 
   schema "generated_inputs" do
     field :placeholder_symbol, :string
 
-    belongs_to :table_column, Schematic.TableColumns.TableColumn
-    belongs_to :generated_column, Schematic.GeneratedColumns.GeneratedColumn
+    belongs_to :table_column, TableColumn
+    belongs_to :generated_column, GeneratedColumn
 
     timestamps()
   end

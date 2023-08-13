@@ -1,12 +1,15 @@
-defmodule Schematic.ConstraintColumns.ConstraintColumn do
+defmodule Schematic.Constraints.ConstraintColumn do
   use Ecto.Schema
   import Ecto.Changeset
+
+  alias Schematic.TableColumns.TableColumn
+  alias Schematic.Constraints.Constraint
 
   schema "constraint_columns" do
     field :placeholder_symbol, :string
 
-    belongs_to :table_column, Schematic.TableColumns.TableColumn
-    belongs_to :constraint, Schematic.Constraints.Constraint
+    belongs_to :table_column, TableColumn
+    belongs_to :constraint, Constraint
 
     timestamps()
   end

@@ -14,6 +14,7 @@ defmodule Schematic.TableColumns.TableColumn do
   schema "table_columns" do
     field :description, :string
     field :column_name, :string
+    field :array_depth, :integer, default: 0
     field :is_primary_key, :boolean, default: false
     field :is_nullable, :boolean, default: false
     field :is_unique, :boolean, default: false
@@ -68,6 +69,7 @@ defmodule Schematic.TableColumns.TableColumn do
     |> cast(attrs, [
       :column_name,
       :description,
+      :array_depth,
       :is_primary_key,
       :is_nullable,
       :is_unique,
@@ -77,5 +79,7 @@ defmodule Schematic.TableColumns.TableColumn do
     ])
     |> cast_polymorphic_embed(:config, required: true)
     |> validate_required([:column_name, :database_table_id])
+
+    # TODO: add custom validation to reject array_depth > 0 when is_primary_key == true
   end
 end

@@ -1,6 +1,7 @@
 defmodule Schematic.TableColumns.TableColumn do
   use Ecto.Schema
   import Ecto.Changeset
+  import PolymorphicEmbed
 
   alias Schematic.DatabaseTables.DatabaseTable
   alias Schematic.Constraints.ConstraintColumn
@@ -8,17 +9,35 @@ defmodule Schematic.TableColumns.TableColumn do
   alias Schematic.TableIndexes.IndexColumn
   alias Schematic.TableColumns.TableColumn
   alias Schematic.TableRelationships.TableRelationship
+  alias Schematic.TableColumns.Config
 
   schema "table_columns" do
-    field :options, :map
     field :description, :string
-    field :data_type, :string
     field :column_name, :string
     field :is_primary_key, :boolean, default: false
     field :is_nullable, :boolean, default: false
     field :is_unique, :boolean, default: false
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
+    # TODO: defaults
+
+    polymorphic_embeds_one(:config,
+      types: [
+        simple: Config.Simple,
+        amount: Config.Amount,
+        decimal: Config.Decimal,
+        money: Config.Money,
+        float: Config.Float,
+        interval: Config.Interval,
+        uuid: Config.UUID
+        # sample schema detected by fields present:
+        # email: [
+        #   module: MyApp.Channel.Email,
+        #   identify_by_fields: [:address, :confirmed]]
+      ],
+      on_type_not_found: :raise,
+      on_replace: :update
+    )
 
     belongs_to :database_table, DatabaseTable
     has_many :constraint_relationships, ConstraintColumn
@@ -38,7 +57,6 @@ defmodule Schematic.TableColumns.TableColumn do
                  join_through: TableRelationship,
                  join_keys: [foreign_key_column_id: :id, primary_key_column_id: :id]
 
-    # TODO: embed_schema :options, %{}
     # TODO: add db unique constraint for column name + table_id
 
     timestamps()
@@ -49,16 +67,15 @@ defmodule Schematic.TableColumns.TableColumn do
     table_column
     |> cast(attrs, [
       :column_name,
-      :data_type,
       :description,
       :is_primary_key,
       :is_nullable,
       :is_unique,
       :deleted,
       :deleted_at,
-      :options,
       :database_table_id
     ])
+    |> cast_polymorphic_embed(:config, required: true)
     |> validate_required([:column_name, :database_table_id])
   end
 end

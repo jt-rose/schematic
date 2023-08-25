@@ -12,6 +12,7 @@
 
 import Ecto.Query, warn: false
 
+alias Schematic.TableRelationships
 alias Schematic.Repo
 
 alias Schematic.Accounts
@@ -28,6 +29,7 @@ alias Schematic.Groups.GroupMember
 alias Schematic.DatabaseTables.DatabaseTable
 
 alias Schematic.TableColumns.TableColumn
+alias Schematic.TableColumns.Config
 
 alias Schematic.TableRelationships.TableRelationship
 
@@ -123,7 +125,11 @@ IO.puts("Generated demo-database")
 # add columns to authors table
 {:ok, author_table_pk} =
   Repo.insert(%TableColumn{
-    data_type: "SERIAL",
+    config: %Config.Simple{
+      data_type: "SERIAL"
+      # __type__: "simple"
+    },
+    # data_type: "SERIAL",
     column_name: "id",
     is_primary_key: true,
     is_unique: true,
@@ -133,7 +139,12 @@ IO.puts("Generated demo-database")
 
 {:ok, author_name} =
   Repo.insert(%TableColumn{
-    data_type: "VARCHAR(255)",
+    config: %Config.Amount{
+      data_type: "VARCHAR",
+      amount: 255
+      # __type__: "amount"
+    },
+    # data_type: "VARCHAR(255)",
     column_name: "name",
     description: "author's first and last name",
     database_table_id: authors_table.id
@@ -141,7 +152,11 @@ IO.puts("Generated demo-database")
 
 {:ok, author_birthyear} =
   Repo.insert(%TableColumn{
-    data_type: "DATETIME",
+    # data_type: "DATETIME",
+    config: %Config.Simple{
+      data_type: "DATETIME"
+      # __type__: "simple"
+    },
     column_name: "birthyear",
     is_nullable: true,
     database_table_id: authors_table.id
@@ -150,21 +165,34 @@ IO.puts("Generated demo-database")
 # used for testing the check function
 {:ok, author_first_edition_sales} =
   Repo.insert(%TableColumn{
-    data_type: "INTEGER",
+    # data_type: "INTEGER",
+    config: %Config.Simple{
+      data_type: "INTEGER"
+      # __type__: "simple"
+    },
     column_name: "first_edition_sales",
     database_table_id: authors_table.id
   })
 
 {:ok, author_total_sales} =
   Repo.insert(%TableColumn{
-    data_type: "INTEGER",
+    # data_type: "INTEGER",
+    config: %Config.Simple{
+      data_type: "INTEGER"
+      # __type__: "simple"
+    },
     column_name: "total_sales",
     database_table_id: authors_table.id
   })
 
 {:ok, author_country} =
   Repo.insert(%TableColumn{
-    data_type: "VARCHAR(255)",
+    # data_type: "VARCHAR(255)",
+    config: %Config.Amount{
+      data_type: "VARCHAR",
+      amount: 255
+      # __type__: "amount"
+    },
     column_name: "country_of_birth",
     is_nullable: true,
     database_table_id: authors_table.id
@@ -173,7 +201,11 @@ IO.puts("Generated demo-database")
 # add columns to books table
 {:ok, books_table_pk} =
   Repo.insert(%TableColumn{
-    data_type: "SERIAL",
+    # data_type: "SERIAL",
+    config: %Config.Simple{
+      data_type: "SERIAL"
+      # __type__: "simple"
+    },
     column_name: "id",
     is_primary_key: true,
     is_unique: true,
@@ -183,21 +215,34 @@ IO.puts("Generated demo-database")
 
 {:ok, book_title} =
   Repo.insert(%TableColumn{
-    data_type: "VARCHAR(255)",
+    # data_type: "VARCHAR(255)",
+    config: %Config.Amount{
+      data_type: "VARCHAR",
+      amount: 255
+      # __type__: "amount"
+    },
     column_name: "title",
     database_table_id: books_table.id
   })
 
 {:ok, book_edition} =
   Repo.insert(%TableColumn{
-    data_type: "INTEGER",
+    # data_type: "INTEGER",
+    config: %Config.Simple{
+      data_type: "INTEGER"
+      # __type__: "simple"
+    },
     column_name: "edition",
     database_table_id: books_table.id
   })
 
 {:ok, book_publication_year} =
   Repo.insert(%TableColumn{
-    data_type: "DATETIME",
+    # data_type: "DATETIME",
+    config: %Config.Simple{
+      data_type: "DATETIME"
+      # __type__: "simple"
+    },
     column_name: "publication_year",
     is_nullable: true,
     database_table_id: books_table.id
@@ -205,7 +250,11 @@ IO.puts("Generated demo-database")
 
 {:ok, book_author} =
   Repo.insert(%TableColumn{
-    data_type: "FOREIGN_KEY",
+    # data_type: "FOREIGN_KEY",
+    config: %Config.Simple{
+      data_type: "FOREIGN KEY"
+      # __type__: "simple"
+    },
     column_name: "author_id",
     database_table_id: books_table.id
   })
@@ -379,5 +428,54 @@ result =
 
 IO.puts("INSERTED:")
 IO.inspect(result)
+
+IO.puts("TESTING BIG QUERY")
+IO.inspect(authors_table.id)
+
+# columns =
+#   Repo.all(
+#     from tb in DatabaseTable,
+#       where: tb.id == ^authors_table.id,
+#       preload: [
+#         :table_columns,
+#         generated_columns: :generated_inputs,
+#         constraints: :constraint_columns,
+#         table_indexes: :index_columns,
+#         triggers: [:sql_function, :sql_function_inputs]
+#       ]
+#   )
+
+columns =
+  Repo.all(
+    from tb in DatabaseTable,
+      where: tb.id == ^authors_table.id,
+      join: c in TableColumn,
+      on: c.database_table_id == tb.id,
+      join: gc in assoc(tb, :generated_columns),
+      join: cons in assoc(tb, :constraints),
+      join: idx in assoc(tb, :table_indexes),
+      join: tr in assoc(tb, :triggers)
+    # preload: [
+    #   :table_columns,
+    #   generated_columns: :generated_inputs,
+    #   constraints: :constraint_columns,
+    #   table_indexes: :index_columns,
+    #   triggers: [:sql_function, :sql_function_inputs]
+    # ]
+  )
+
+# indexes =
+#   Repo.all(
+#     from mc_idx in TableIndex,
+#       # where:
+#       preload: [:index_columns]
+#   )
+
+# rels =
+#   Repo.all(
+#     from rel in TableRelationship,
+#       # where:
+#       preload: []
+#   )
 
 IO.puts("\nSeeding Complete")

@@ -4,8 +4,10 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
 
   alias Schematic.Projects.ProjectDatabase
   alias Schematic.TableColumns.TableColumn
+  alias Schematic.GeneratedColumns.GeneratedColumn
   alias Schematic.Constraints.Constraint
   alias Schematic.TableIndexes.TableIndex
+  alias Schematic.Triggers.SqlTrigger
 
   schema "database_tables" do
     field :name, :string
@@ -15,8 +17,10 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
 
     belongs_to :project_database, ProjectDatabase
     has_many :table_columns, TableColumn
+    has_many :generated_columns, GeneratedColumn
     has_many :constraints, Constraint
     has_many :table_indexes, TableIndex
+    has_many :triggers, SqlTrigger
 
     # TODO: many to many for index_columns?
 

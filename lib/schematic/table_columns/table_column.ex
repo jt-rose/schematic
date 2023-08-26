@@ -79,6 +79,7 @@ defmodule Schematic.TableColumns.TableColumn do
     ])
     |> cast_polymorphic_embed(:config, required: true)
     |> validate_required([:column_name, :database_table_id])
+    |> validate_number(:array_depth, greater_than: 0, less_than: 4)
 
     # TODO: add custom validation to reject array_depth > 0 when is_primary_key == true
   end

@@ -77,7 +77,7 @@ defmodule Schematic.TableColumns.TableColumn do
       :deleted_at,
       :database_table_id
     ])
-    |> cast_polymorphic_embed(:config, required: true)
+    |> cast_polymorphic_embed(:config, required: false)
     |> validate_required([:column_name, :database_table_id])
     |> validate_number(:array_depth, greater_than: 0, less_than: 4)
 

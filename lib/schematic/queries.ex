@@ -19,22 +19,27 @@ defmodule Schematic.Queries do
       from db in ProjectDatabase,
         where: db.id == ^db_id,
         left_join: tables in assoc(db, :database_tables),
+        left_join: enums in assoc(db, :database_enums),
+        left_join: enum_values in assoc(enums, :enum_values),
         left_join: columns in assoc(tables, :table_columns),
         left_join: gc in assoc(tables, :generated_columns),
+        left_join: enum_col in assoc(tables, :enum_columns),
         left_join: cons in assoc(tables, :constraints),
         left_join: idx in assoc(tables, :table_indexes),
         left_join: tr in assoc(tables, :triggers),
         left_join: sql_func in assoc(tr, :sql_function),
         left_join: sql_func_inputs in assoc(tr, :sql_function_inputs),
-        # left_join: enums
         preload: [
           database_tables:
             {tables,
              table_columns: columns,
              generated_columns: gc,
+             enum_columns: enum_col,
              constraints: cons,
              table_indexes: idx,
-             triggers: {tr, sql_function: sql_func, sql_function_inputs: sql_func_inputs}}
+             triggers: {tr, sql_function: sql_func, sql_function_inputs: sql_func_inputs}},
+          database_enums: {enums, enum_values: enum_values}
+          # partitions
         ]
     )
   end
@@ -45,6 +50,8 @@ defmodule Schematic.Queries do
         where: tb.id in ^table_ids,
         preload: [
           :table_columns,
+          :enum_columns,
+          database_enums: :enum_values,
           generated_columns: :generated_inputs,
           constraints: :constraint_columns,
           table_indexes: :index_columns,

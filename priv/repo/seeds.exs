@@ -46,6 +46,11 @@ alias Schematic.Triggers.SqlFunctionInput
 alias Schematic.TableIndexes.TableIndex
 alias Schematic.TableIndexes.IndexColumn
 
+alias Schematic.DatabaseEnums
+alias DatabaseEnums.DatabaseEnum
+alias DatabaseEnums.EnumValue
+alias DatabaseEnums.EnumColumn
+
 # clear previous data
 Repo.delete_all(IndexColumn)
 Repo.delete_all(TableIndex)
@@ -106,6 +111,31 @@ IO.puts("Generated demo-project")
   })
 
 IO.puts("Generated demo-database")
+
+# add database enums
+
+{:ok, season_enum} =
+  DatabaseEnums.create_database_enum(%{
+    project_database: demo_db,
+    name: "seasons",
+    enum_values: [
+      %EnumValue{
+        value: "spring"
+      },
+      %EnumValue{
+        value: "summer"
+      },
+      %EnumValue{
+        value: "winter"
+      },
+      %EnumValue{
+        value: "fall"
+      }
+    ]
+  })
+
+# TODO: defaults?
+# TODO: query result
 
 # add tables to database
 {:ok, authors_table} =
@@ -257,6 +287,14 @@ IO.puts("Generated demo-database")
     },
     column_name: "author_id",
     database_table_id: books_table.id
+  })
+
+# add enum column
+{:ok, book_release_season} =
+  Repo.insert(%EnumColumn{
+    database_enum: season_enum,
+    database_table: books_table,
+    column_name: "release_season"
   })
 
 # add table relationships
@@ -477,5 +515,13 @@ columns =
 #       # where:
 #       preload: []
 #   )
+
+table_ids = Schematic.DatabaseTables.list_database_tables() |> Enum.map(fn tb -> tb.id end)
+
+IO.puts("TEST PRELOADS:")
+Schematic.Queries.list_table_features(table_ids)
+
+IO.puts("TEST WITH JOIN / PRELOAD MIX:")
+Schematic.Queries.list_table_features2(table_ids)
 
 IO.puts("\nSeeding Complete")

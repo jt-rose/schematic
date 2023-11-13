@@ -81,6 +81,8 @@ defmodule SchematicWeb do
 
   defp html_helpers do
     quote do
+      use PetalComponents
+
       # HTML escaping functionality
       import Phoenix.HTML
       # Core UI components and translation

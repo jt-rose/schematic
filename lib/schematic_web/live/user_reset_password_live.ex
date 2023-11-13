@@ -5,7 +5,7 @@ defmodule SchematicWeb.UserResetPasswordLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">Reset Password</.header>
 
       <.simple_form
@@ -18,19 +18,19 @@ defmodule SchematicWeb.UserResetPasswordLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <.input field={@form[:password]} type="password" label="New password" required />
-        <.input
+        <.core_input field={@form[:password]} type="password" label="New password" required />
+        <.core_input
           field={@form[:password_confirmation]}
           type="password"
           label="Confirm new password"
           required
         />
         <:actions>
-          <.button phx-disable-with="Resetting..." class="w-full">Reset Password</.button>
+          <.core_button phx-disable-with="Resetting..." class="w-full">Reset Password</.core_button>
         </:actions>
       </.simple_form>
 
-      <p class="text-center text-sm mt-4">
+      <p class="mt-4 text-sm text-center">
         <.link href={~p"/users/register"}>Register</.link>
         | <.link href={~p"/users/log_in"}>Log in</.link>
       </p>

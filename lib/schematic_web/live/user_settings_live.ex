@@ -18,8 +18,8 @@ defmodule SchematicWeb.UserSettingsLive do
           phx-submit="update_email"
           phx-change="validate_email"
         >
-          <.input field={@email_form[:email]} type="email" label="Email" required />
-          <.input
+          <.core_input field={@email_form[:email]} type="email" label="Email" required />
+          <.core_input
             field={@email_form[:current_password]}
             name="current_password"
             id="current_password_for_email"
@@ -29,7 +29,7 @@ defmodule SchematicWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Email</.button>
+            <.core_button phx-disable-with="Changing...">Change Email</.core_button>
           </:actions>
         </.simple_form>
       </div>
@@ -43,19 +43,24 @@ defmodule SchematicWeb.UserSettingsLive do
           phx-submit="update_password"
           phx-trigger-action={@trigger_submit}
         >
-          <.input
+          <.core_input
             field={@password_form[:email]}
             type="hidden"
             id="hidden_user_email"
             value={@current_email}
           />
-          <.input field={@password_form[:password]} type="password" label="New password" required />
-          <.input
+          <.core_input
+            field={@password_form[:password]}
+            type="password"
+            label="New password"
+            required
+          />
+          <.core_input
             field={@password_form[:password_confirmation]}
             type="password"
             label="Confirm new password"
           />
-          <.input
+          <.core_input
             field={@password_form[:current_password]}
             name="current_password"
             type="password"
@@ -65,7 +70,7 @@ defmodule SchematicWeb.UserSettingsLive do
             required
           />
           <:actions>
-            <.button phx-disable-with="Changing...">Change Password</.button>
+            <.core_button phx-disable-with="Changing...">Change Password</.core_button>
           </:actions>
         </.simple_form>
       </div>

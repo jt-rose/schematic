@@ -3,7 +3,7 @@ defmodule SchematicWeb.UserLoginLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">
         Sign in to account
         <:subtitle>
@@ -16,19 +16,19 @@ defmodule SchematicWeb.UserLoginLive do
       </.header>
 
       <.simple_form for={@form} id="login_form" action={~p"/users/log_in"} phx-update="ignore">
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.core_input field={@form[:email]} type="email" label="Email" required />
+        <.core_input field={@form[:password]} type="password" label="Password" required />
 
         <:actions>
-          <.input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
+          <.core_input field={@form[:remember_me]} type="checkbox" label="Keep me logged in" />
           <.link href={~p"/users/reset_password"} class="text-sm font-semibold">
             Forgot your password?
           </.link>
         </:actions>
         <:actions>
-          <.button phx-disable-with="Signing in..." class="w-full">
+          <.core_button phx-disable-with="Signing in..." class="w-full">
             Sign in <span aria-hidden="true">→</span>
-          </.button>
+          </.core_button>
         </:actions>
       </.simple_form>
     </div>

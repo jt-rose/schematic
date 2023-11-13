@@ -6,7 +6,7 @@ defmodule SchematicWeb.UserRegistrationLive do
 
   def render(assigns) do
     ~H"""
-    <div class="mx-auto max-w-sm">
+    <div class="max-w-sm mx-auto">
       <.header class="text-center">
         Register for an account
         <:subtitle>
@@ -31,11 +31,13 @@ defmodule SchematicWeb.UserRegistrationLive do
           Oops, something went wrong! Please check the errors below.
         </.error>
 
-        <.input field={@form[:email]} type="email" label="Email" required />
-        <.input field={@form[:password]} type="password" label="Password" required />
+        <.core_input field={@form[:email]} type="email" label="Email" required />
+        <.core_input field={@form[:password]} type="password" label="Password" required />
 
         <:actions>
-          <.button phx-disable-with="Creating account..." class="w-full">Create an account</.button>
+          <.core_button phx-disable-with="Creating account..." class="w-full">
+            Create an account
+          </.core_button>
         </:actions>
       </.simple_form>
     </div>

@@ -50,8 +50,9 @@ defmodule Schematic.Queries do
         where: tb.id in ^table_ids,
         preload: [
           :table_columns,
-          :enum_columns,
-          database_enums: :enum_values,
+          # TODO: below is poorly optimized
+          enum_columns: [database_enum: :enum_values],
+          # database_enums: :enum_values,
           generated_columns: :generated_inputs,
           constraints: :constraint_columns,
           table_indexes: :index_columns,

@@ -113,10 +113,11 @@ IO.puts("Generated demo-project")
 IO.puts("Generated demo-database")
 
 # add database enums
+IO.inspect(demo_db)
 
 {:ok, season_enum} =
   DatabaseEnums.create_database_enum(%{
-    project_database: demo_db,
+    project_database_id: demo_db.id,
     name: "seasons",
     enum_values: [
       %EnumValue{
@@ -142,14 +143,18 @@ IO.puts("Generated demo-database")
   Repo.insert(%DatabaseTable{
     name: "authors",
     description: "authors past and present",
-    project_database_id: demo_db.id
+    project_database_id: demo_db.id,
+    grid_column_start: 2,
+    grid_row_start: 2
   })
 
 {:ok, books_table} =
   Repo.insert(%DatabaseTable{
     name: "writings",
     description: "books, essays, and poems",
-    project_database_id: demo_db.id
+    project_database_id: demo_db.id,
+    grid_column_start: 8,
+    grid_row_start: 4
   })
 
 # add columns to authors table
@@ -522,6 +527,6 @@ IO.puts("TEST PRELOADS:")
 Schematic.Queries.list_table_features(table_ids)
 
 IO.puts("TEST WITH JOIN / PRELOAD MIX:")
-Schematic.Queries.list_table_features2(table_ids)
+Schematic.Queries.list_db_tables(demo_db.id)
 
 IO.puts("\nSeeding Complete")

@@ -13,6 +13,9 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
   schema "database_tables" do
     field :name, :string
     field :description, :string
+    field :grid_column_start, :integer
+    field :grid_row_start, :integer
+    field :grid_width, :string, default: "normal"
     field :deleted, :boolean, default: false
     field :deleted_at, :utc_datetime
 
@@ -32,7 +35,16 @@ defmodule Schematic.DatabaseTables.DatabaseTable do
   @doc false
   def changeset(database_table, attrs) do
     database_table
-    |> cast(attrs, [:name, :description, :deleted, :deleted_at, :project_database_id])
-    |> validate_required([:name, :project_database_id])
+    |> cast(attrs, [
+      :name,
+      :description,
+      :grid_column_start,
+      :grid_row_start,
+      :grid_width,
+      :deleted,
+      :deleted_at,
+      :project_database_id
+    ])
+    |> validate_required([:name, :grid_column_start, :grid_row_start, :project_database_id])
   end
 end

@@ -153,7 +153,7 @@ IO.inspect(demo_db)
     name: "writings",
     description: "books, essays, and poems",
     project_database_id: demo_db.id,
-    grid_column_start: 8,
+    grid_column_start: 9,
     grid_row_start: 4
   })
 

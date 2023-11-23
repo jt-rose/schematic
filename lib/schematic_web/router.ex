@@ -21,11 +21,23 @@ defmodule SchematicWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live "/projects", ProjectsLive.Index
+    live "/projects/new", ProjectsLive, :new
+    live "/projects/:id", ProjectsLive, :show
+    live "/projects/:id/edit", ProjectsLive, :edit
+
+    live "/database/:id", DatabaseLive.Index, :index
+    live "/database/:id/column/:cid", DatabaseLive.Index, :config_panel
+
+    # live "/tst", TstLive
   end
 
   # Other scopes may use custom stacks.
   # scope "/api", SchematicWeb do
   #   pipe_through :api
+
+  #   get("/login", UserSessionController)
   # end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

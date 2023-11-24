@@ -45,7 +45,7 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
 
   # calculate grid column and grid row start and stop positions
   def calculate_table_boundaries(_table) do
-    # TODO
+    # TODO - avoid using this logic twice
     %{l: 2, r: 4, t: 0, b: 5}
   end
 
@@ -76,7 +76,7 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
     l = max(boundary.l - 10, 0)
     r = boundary.r + 10
     t = max(boundary.t - 10, 0)
-    b = boundary.t + 10
+    b = boundary.b + 10
 
     %{l: l, r: r, t: t, b: b}
   end

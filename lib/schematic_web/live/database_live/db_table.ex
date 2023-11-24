@@ -46,32 +46,49 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   def convert_width_enum("normal"), do: 5
   def convert_width_enum(_), do: 5
 
-  def get_column_boundaries(table, table_width) do
-    column_start = table.grid_column_start
-    column_end = table.grid_column_start + table_width
-
-    {column_start, column_end}
+  def get_table_width(table) do
+    table_width = convert_width_enum(table.grid_width)
+    Map.put(table, :grid_width, table_width)
   end
 
-  def get_row_boundaries(table) do
-    row_start = table.grid_row_start
-    row_end = table.grid_row_start + length(table.table_columns)
+  def get_column_end(table) do
+    grid_column_end = table.grid_column_start + table.grid_width
+    Map.put(table, :grid_column_end, grid_column_end)
+  end
 
-    {row_start, row_end}
+  def get_row_end(table) do
+    grid_row_end = table.grid_row_start + length(table.table_columns)
+    Map.put(table, :grid_row_end, grid_row_end)
+  end
+
+  def get_grid_buffer(table) do
+    table
+    |> Map.put(:top_buffer, table.grid_row_start - 2)
+    |> Map.put(:bottom_buffer, table.grid_row_end + 2)
+    |> Map.put(:top_buffer, table.grid_column_start - 2)
+    |> Map.put(:top_buffer, table.grid_column_end + 2)
   end
 
   def format_table_style(table) do
-    table_width = convert_width_enum(table.grid_width)
-    {column_start, column_end} = get_column_boundaries(table, table_width)
-    {row_start, row_end} = get_row_boundaries(table)
-
-    "
-    width: #{@grid_tyle_length * table_width}#{@unit};
-    grid-column-start: #{column_start};
-    grid-column-end: #{column_end};
-    grid-row-start: #{row_start};
-    grid-row-end: #{row_end};
+    style = "
+    width: #{@grid_tyle_length * table.grid_width}#{@unit};
+    grid-column-start: #{table.grid_column_start};
+    grid-column-end: #{table.grid_column_end};
+    grid-row-start: #{table.grid_row_start};
+    grid-row-end: #{table.grid_row_end};
     background: violet;
-    z-index: 10;"
+    z-index: 10;
+    "
+
+    Map.put(table, :style, style)
+  end
+
+  def format_table(table) do
+    table
+    |> get_table_width
+    |> get_column_end
+    |> get_row_end
+    |> get_grid_buffer
+    |> format_table_style
   end
 end

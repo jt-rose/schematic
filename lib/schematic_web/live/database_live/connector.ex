@@ -102,4 +102,42 @@ defmodule SchematicWeb.DatabaseLive.Connector do
     grid-row-start: #{row};
     "
   end
+
+  def connector(assigns) do
+    ~H"""
+    <%= case @orientation do %>
+      <% "vertical" -> %>
+        <.vertical_line col={@col} row={@row} />
+      <% "horizontal" -> %>
+        <.horizontal_line col={@col} row={@row} />
+      <% "topleft" -> %>
+        <.topleft_angle col={@col} row={@row} />
+      <% "topright" -> %>
+        <.topright_angle col={@col} row={@row} />
+      <% "bottomleft" -> %>
+        <.bottomleft_angle col={@col} row={@row} />
+      <% "bottomright" -> %>
+        <.bottomright_angle col={@col} row={@row} />
+    <% end %>
+    """
+  end
+
+  def generate_connectors(_tables) do
+    # TODO: implement, stubbed for now
+    [
+      %{orientation: "horizontal", col: 7, row: 3},
+      %{orientation: "bottomleft", col: 8, row: 3},
+      %{orientation: "vertical", col: 8, row: 4},
+      %{orientation: "vertical", col: 8, row: 5},
+      %{orientation: "vertical", col: 8, row: 6},
+      %{orientation: "vertical", col: 8, row: 7},
+      %{orientation: "vertical", col: 8, row: 8},
+      %{orientation: "topright", col: 8, row: 9},
+      #
+      %{orientation: "topleft", col: 10, row: 10},
+      %{orientation: "topright", col: 11, row: 10},
+      %{orientation: "bottomleft", col: 10, row: 11},
+      %{orientation: "bottomright", col: 11, row: 11}
+    ]
+  end
 end

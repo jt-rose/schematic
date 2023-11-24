@@ -9,7 +9,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   import SchematicWeb.DatabaseLive.DbTable
 
   @grid_tyle_length 3.5
-  @table_width 6
+  # @table_width 6
   @unit "em"
 
   def render(assigns) do
@@ -20,20 +20,9 @@ defmodule SchematicWeb.DatabaseLive.Index do
       <%= for tb <- @tables do %>
         <.db_table table={tb} db_id={@db_id} style={tb.style} />
       <% end %>
-      <%!-- <.vertical_line /> --%>
-      <.horizontal_line col={7} row={3} />
-      <.bottomleft_angle col={8} row={3} />
-      <.vertical_line col={8} row={4} />
-      <.vertical_line col={8} row={5} />
-      <.vertical_line col={8} row={6} />
-      <.vertical_line col={8} row={7} />
-      <.vertical_line col={8} row={8} />
-      <.topright_angle col={8} row={9} />
-      <%!--  --%>
-      <.topleft_angle col={10} row={10} />
-      <.topright_angle col={11} row={10} />
-      <.bottomleft_angle col={10} row={11} />
-      <.bottomright_angle col={11} row={11} />
+      <%= for connector <- @connectors do %>
+        <.connector orientation={connector.orientation} col={connector.col} row={connector.row} />
+      <% end %>
     </.grid_layout>
 
     <%= if @selected_column do %>
@@ -54,6 +43,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   def mount(%{"id" => id} = _params, _session, socket) do
     db = Queries.list_db_tables(id) |> Enum.at(0)
     tables = db.database_tables |> Enum.map(&format_table/1)
+    connectors = generate_connectors(tables)
     grid_style = format_grid_style(40, 40)
 
     socket =
@@ -62,6 +52,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
         db_name: db.name,
         tables: tables,
         grid_style: grid_style,
+        connectors: connectors,
         selected_column: nil
       )
 

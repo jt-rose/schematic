@@ -52,7 +52,8 @@ defmodule Schematic.MixProject do
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
       {:polymorphic_embed, "~> 3.0.5"},
-      {:petal_components, "~> 1.0"}
+      {:petal_components, "~> 1.0"},
+      {:qex, "~> 0.5"}
     ]
   end
 

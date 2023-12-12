@@ -294,6 +294,13 @@ IO.inspect(demo_db)
     database_table_id: books_table.id
   })
 
+# add undefined column
+{:ok, book_etc} =
+  Repo.insert(%TableColumn{
+    column_name: "etc",
+    database_table_id: books_table.id
+  })
+
 # add enum column
 {:ok, book_release_season} =
   Repo.insert(%EnumColumn{
@@ -307,6 +314,7 @@ IO.inspect(demo_db)
   Repo.insert(%TableRelationship{
     primary_key_column_id: author_table_pk.id,
     foreign_key_column_id: book_author.id,
+    project_database_id: demo_db.id,
     on_delete: :cascade,
     on_update: :no_action
   })

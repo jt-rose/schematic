@@ -5,6 +5,10 @@ defmodule Schematic.Repo.Migrations.CreateTableRelationships do
     create table(:table_relationships) do
       add :primary_key_column_id, references(:table_columns, on_delete: :restrict), null: false
       add :foreign_key_column_id, references(:table_columns, on_delete: :delete_all), null: false
+
+      add :project_database_id, references(:project_databases, on_delete: :delete_all),
+        null: false
+
       add :on_delete, :string, null: false
       add :on_update, :string, null: false
 
@@ -13,6 +17,7 @@ defmodule Schematic.Repo.Migrations.CreateTableRelationships do
 
     create index(:table_relationships, [:primary_key_column_id])
     create index(:table_relationships, [:foreign_key_column_id])
+    create index(:table_relationships, [:project_database_id])
 
     create unique_index(:table_relationships, [:primary_key_column_id, :foreign_key_column_id],
              name: :table_relationships_pk_fk_index

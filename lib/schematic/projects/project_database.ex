@@ -5,6 +5,7 @@ defmodule Schematic.Projects.ProjectDatabase do
   alias Schematic.Projects.Project
   alias Schematic.DatabaseTables.DatabaseTable
   alias Schematic.DatabaseEnums.DatabaseEnum
+  alias Schematic.TableRelationships.TableRelationship
 
   schema "project_databases" do
     field :name, :string
@@ -15,6 +16,7 @@ defmodule Schematic.Projects.ProjectDatabase do
     belongs_to :project, Project, foreign_key: :project_id
     has_many :database_tables, DatabaseTable
     has_many :database_enums, DatabaseEnum
+    has_many :table_relationships, TableRelationship, foreign_key: :project_database_id
 
     timestamps()
   end

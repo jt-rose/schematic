@@ -19,6 +19,7 @@ defmodule Schematic.Queries do
       from db in ProjectDatabase,
         where: db.id == ^db_id,
         left_join: tables in assoc(db, :database_tables),
+        left_join: table_relationships in assoc(db, :table_relationships),
         left_join: enums in assoc(db, :database_enums),
         left_join: enum_values in assoc(enums, :enum_values),
         left_join: columns in assoc(tables, :table_columns),
@@ -38,6 +39,7 @@ defmodule Schematic.Queries do
              constraints: cons,
              table_indexes: idx,
              triggers: {tr, sql_function: sql_func, sql_function_inputs: sql_func_inputs}},
+          table_relationships: table_relationships,
           database_enums: {enums, enum_values: enum_values}
           # partitions
         ]

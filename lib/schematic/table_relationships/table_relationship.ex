@@ -1,10 +1,12 @@
 defmodule Schematic.TableRelationships.TableRelationship do
+  alias Schematic.Projects.ProjectDatabase
   use Ecto.Schema
   import Ecto.Changeset
 
   schema "table_relationships" do
     field :primary_key_column_id, :id
     field :foreign_key_column_id, :id
+    belongs_to :project_database, ProjectDatabase, foreign_key: :project_database_id
 
     field :on_delete, Ecto.Enum,
       values: [:restrict, :cascade, :no_action, :set_null, :set_default]
@@ -18,8 +20,20 @@ defmodule Schematic.TableRelationships.TableRelationship do
   @doc false
   def changeset(table_relationship, attrs) do
     table_relationship
-    |> cast(attrs, [:primary_key_column_id, :foreign_key_column_id, :on_delete, :on_update])
-    |> validate_required([:primary_key_column_id, :foreign_key_column_id, :on_delete, :on_update])
+    |> cast(attrs, [
+      :primary_key_column_id,
+      :foreign_key_column_id,
+      :project_database_id,
+      :on_delete,
+      :on_update
+    ])
+    |> validate_required([
+      :primary_key_column_id,
+      :foreign_key_column_id,
+      :project_database_id,
+      :on_delete,
+      :on_update
+    ])
     |> unique_constraint([:primary_key_column_id, :foreign_key_column_id],
       name: :table_relationships_pk_fk_index
     )

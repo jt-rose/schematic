@@ -22,7 +22,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
           </div>
         </.th>
       </.tr>
-      <%= for column <- order_columns(@table) do %>
+      <%= for column <- @table.columns do %>
         <%!-- <%= for column <- @table.table_columns do %> --%>
         <.tr
           style="height:3.5em;"
@@ -41,12 +41,6 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
       <% end %>
     </.table>
     """
-  end
-
-  # TODO: optimize to avoid rerender for every table update
-  def order_columns(table) do
-    (table.table_columns ++ table.enum_columns ++ table.generated_columns)
-    |> Enum.sort(&(&1.seq_order <= &2.seq_order))
   end
 
   def convert_width_enum("wide"), do: 7
@@ -90,6 +84,15 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     Map.put(table, :style, style)
   end
 
+  # TODO: optimize to avoid rerender for every table update
+  def format_column_order(table) do
+    columns =
+      (table.table_columns ++ table.enum_columns ++ table.generated_columns)
+      |> Enum.sort(&(&1.seq_order <= &2.seq_order))
+
+    Map.put(table, :columns, columns)
+  end
+
   def format_table(table) do
     table
     |> get_table_width
@@ -97,5 +100,6 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     |> get_row_end
     |> get_grid_buffer
     |> format_table_style
+    |> format_column_order
   end
 end

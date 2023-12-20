@@ -22,7 +22,8 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
           </div>
         </.th>
       </.tr>
-      <%= for column <- @table.table_columns do %>
+      <%= for column <- order_columns(@table) do %>
+        <%!-- <%= for column <- @table.table_columns do %> --%>
         <.tr
           style="height:3.5em;"
           class="hover:bg-slate-600 hover:cursor-pointer"
@@ -40,6 +41,12 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
       <% end %>
     </.table>
     """
+  end
+
+  # TODO: optimize to avoid rerender for every table update
+  def order_columns(table) do
+    (table.table_columns ++ table.enum_columns ++ table.generated_columns)
+    |> Enum.sort(&(&1.seq_order <= &2.seq_order))
   end
 
   def convert_width_enum("wide"), do: 7

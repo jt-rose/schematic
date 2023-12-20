@@ -3,7 +3,8 @@ defmodule Schematic.Repo.Migrations.CreateGeneratedColumns do
 
   def change do
     create table(:generated_columns) do
-      add :name, :string, null: false
+      add :column_name, :string, null: false
+      add :seq_order, :integer, null: false
       add :description, :text
       add :generation_expression, :string, null: false
       add :database_table_id, references(:database_tables, on_delete: :delete_all), null: false

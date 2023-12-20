@@ -6,6 +6,7 @@ defmodule Schematic.DatabaseEnums.EnumColumn do
 
   schema "enum_columns" do
     field :description, :string
+    field :seq_order, :integer
     field :is_unique, :boolean, default: false
     field :column_name, :string
     field :array_depth, :integer
@@ -25,6 +26,7 @@ defmodule Schematic.DatabaseEnums.EnumColumn do
     enum_column
     |> cast(attrs, [
       :column_name,
+      :seq_order,
       :description,
       :array_depth,
       :is_primary_key,
@@ -37,6 +39,7 @@ defmodule Schematic.DatabaseEnums.EnumColumn do
     ])
     |> validate_required([
       :column_name,
+      :seq_order,
       :database_enum_id,
       :database_table_id
     ])

@@ -5,6 +5,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   # alias Schematic.Projects.ProjectDatabase
   alias Schematic.Queries
   import SchematicWeb.DatabaseLive.Connector
+  import SchematicWeb.DatabaseLive.Pathfinder
   import SchematicWeb.DatabaseLive.GridLayout
   import SchematicWeb.DatabaseLive.DbTable
 
@@ -43,14 +44,18 @@ defmodule SchematicWeb.DatabaseLive.Index do
   def mount(%{"id" => id} = _params, _session, socket) do
     db = Queries.list_db_tables(id) |> Enum.at(0)
     tables = db.database_tables |> Enum.map(&format_table/1)
-    connectors = generate_connectors(tables)
+    connectors = generate_connectors(db)
     grid_style = format_grid_style(40, 40)
+
+    IO.inspect(db.table_relationships)
 
     socket =
       assign(socket,
         db_id: id,
         db_name: db.name,
         tables: tables,
+        # TODO: handle enum + generated columns
+        relationships: db.table_relationships,
         grid_style: grid_style,
         connectors: connectors,
         selected_column: nil

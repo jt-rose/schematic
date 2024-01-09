@@ -4,7 +4,7 @@ defmodule Schematic.Repo.Migrations.CreateTableColumns do
   def change do
     create table(:table_columns) do
       add :column_name, :string, null: false
-      add :seq_order, :integer, null: false
+      add :table_position, :integer, null: false
       add :config, :map
       add :description, :text
       add :array_depth, :integer, default: 0, null: false

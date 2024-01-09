@@ -3,7 +3,7 @@
 mix phx.gen.context TableColumns TableColumn table_columns \
     table_id:references:database_tables \
     column_name:string \
-    seq_order:integer \
+    table_position:integer \
     array_depth:integer \
     config:map \
     description:text \

@@ -4,7 +4,7 @@ mix phx.gen.context DatabaseEnums EnumColumn enum_columns \
     database_enum_id:references:database_enums \
     database_table_id:references:database_tables \
     column_name:string \
-    seq_order:integer \
+    table_position:integer \
     description:text \
     array_depth:integer \
     is_primary_key:boolean \

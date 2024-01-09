@@ -8,7 +8,7 @@ defmodule Schematic.GeneratedColumns.GeneratedColumn do
   schema "generated_columns" do
     field :column_name, :string
     field :description, :string
-    field :seq_order, :integer
+    field :table_position, :integer
     field :generation_expression, :string
 
     belongs_to :database_table, DatabaseTable
@@ -22,11 +22,16 @@ defmodule Schematic.GeneratedColumns.GeneratedColumn do
     generated_column
     |> cast(attrs, [
       :column_name,
-      :seq_order,
+      :table_position,
       :description,
       :generation_expression,
       :database_table_id
     ])
-    |> validate_required([:column_name, :seq_order, :generation_expression, :database_table_id])
+    |> validate_required([
+      :column_name,
+      :table_position,
+      :generation_expression,
+      :database_table_id
+    ])
   end
 end

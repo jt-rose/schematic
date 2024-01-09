@@ -166,7 +166,7 @@ IO.inspect(demo_db)
     },
     # data_type: "SERIAL",
     column_name: "id",
-    seq_order: 100,
+    table_position: 100,
     is_primary_key: true,
     is_unique: true,
     # TODO: add check for primary key and enforce unique
@@ -182,7 +182,7 @@ IO.inspect(demo_db)
     },
     # data_type: "VARCHAR(255)",
     column_name: "name",
-    seq_order: 200,
+    table_position: 200,
     description: "author's first and last name",
     database_table_id: authors_table.id
   })
@@ -195,7 +195,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "birthyear",
-    seq_order: 300,
+    table_position: 300,
     is_nullable: true,
     database_table_id: authors_table.id
   })
@@ -209,7 +209,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "first_edition_sales",
-    seq_order: 400,
+    table_position: 400,
     database_table_id: authors_table.id
   })
 
@@ -221,7 +221,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "total_sales",
-    seq_order: 500,
+    table_position: 500,
     database_table_id: authors_table.id
   })
 
@@ -234,7 +234,7 @@ IO.inspect(demo_db)
       # __type__: "amount"
     },
     column_name: "country_of_birth",
-    seq_order: 600,
+    table_position: 600,
     is_nullable: true,
     database_table_id: authors_table.id
   })
@@ -248,7 +248,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "id",
-    seq_order: 100,
+    table_position: 100,
     is_primary_key: true,
     is_unique: true,
     # TODO: add check for primary key and enforce unique
@@ -264,7 +264,7 @@ IO.inspect(demo_db)
       # __type__: "amount"
     },
     column_name: "title",
-    seq_order: 200,
+    table_position: 200,
     database_table_id: books_table.id
   })
 
@@ -276,7 +276,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "edition",
-    seq_order: 300,
+    table_position: 300,
     database_table_id: books_table.id
   })
 
@@ -288,7 +288,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "publication_year",
-    seq_order: 400,
+    table_position: 400,
     is_nullable: true,
     database_table_id: books_table.id
   })
@@ -301,7 +301,7 @@ IO.inspect(demo_db)
       # __type__: "simple"
     },
     column_name: "author_id",
-    seq_order: 500,
+    table_position: 500,
     database_table_id: books_table.id
   })
 
@@ -309,7 +309,7 @@ IO.inspect(demo_db)
 {:ok, book_etc} =
   Repo.insert(%TableColumn{
     column_name: "etc",
-    seq_order: 600,
+    table_position: 600,
     database_table_id: books_table.id
   })
 
@@ -319,7 +319,7 @@ IO.inspect(demo_db)
     database_enum: season_enum,
     database_table: books_table,
     column_name: "release_season",
-    seq_order: 700
+    table_position: 700
   })
 
 # add table relationships
@@ -400,7 +400,7 @@ Repo.insert(%GeneratedColumn{
   database_table: authors_table,
   description: "total sales for second editions onwards",
   column_name: "author_post_first_edition_sales",
-  seq_order: 700,
+  table_position: 700,
   generation_expression: "123-uuid-456 - 456-uuid-789",
   generated_inputs: [
     %GeneratedInput{

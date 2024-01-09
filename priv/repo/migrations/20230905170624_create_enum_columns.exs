@@ -4,7 +4,7 @@ defmodule Schematic.Repo.Migrations.CreateEnumColumns do
   def change do
     create table(:enum_columns) do
       add :column_name, :string, null: false
-      add :seq_order, :integer, null: false
+      add :table_position, :integer, null: false
       add :description, :text
       add :array_depth, :integer, null: false, default: 0
       add :is_primary_key, :boolean, default: false, null: false

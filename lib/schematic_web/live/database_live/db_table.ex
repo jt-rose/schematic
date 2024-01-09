@@ -88,7 +88,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   def format_column_order(table) do
     columns =
       (table.table_columns ++ table.enum_columns ++ table.generated_columns)
-      |> Enum.sort(&(&1.seq_order <= &2.seq_order))
+      |> Enum.sort(&(&1.table_position <= &2.table_position))
 
     Map.put(table, :columns, columns)
   end

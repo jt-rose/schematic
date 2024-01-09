@@ -58,7 +58,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   end
 
   def get_row_end(table) do
-    grid_row_end = table.grid_row_start + length(table.table_columns)
+    grid_row_end = table.grid_row_start + length(table.columns)
     Map.put(table, :grid_row_end, grid_row_end)
   end
 
@@ -95,11 +95,11 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
 
   def format_table(table) do
     table
+    |> format_column_order
     |> get_table_width
     |> get_column_end
     |> get_row_end
     |> get_grid_buffer
     |> format_table_style
-    |> format_column_order
   end
 end

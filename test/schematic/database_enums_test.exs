@@ -23,7 +23,9 @@ defmodule Schematic.DatabaseEnumsTest do
     test "create_database_enum/1 with valid data creates a database_enum" do
       valid_attrs = %{name: "some name", description: "some description"}
 
-      assert {:ok, %DatabaseEnum{} = database_enum} = DatabaseEnums.create_database_enum(valid_attrs)
+      assert {:ok, %DatabaseEnum{} = database_enum} =
+               DatabaseEnums.create_database_enum(valid_attrs)
+
       assert database_enum.name == "some name"
       assert database_enum.description == "some description"
     end
@@ -36,21 +38,29 @@ defmodule Schematic.DatabaseEnumsTest do
       database_enum = database_enum_fixture()
       update_attrs = %{name: "some updated name", description: "some updated description"}
 
-      assert {:ok, %DatabaseEnum{} = database_enum} = DatabaseEnums.update_database_enum(database_enum, update_attrs)
+      assert {:ok, %DatabaseEnum{} = database_enum} =
+               DatabaseEnums.update_database_enum(database_enum, update_attrs)
+
       assert database_enum.name == "some updated name"
       assert database_enum.description == "some updated description"
     end
 
     test "update_database_enum/2 with invalid data returns error changeset" do
       database_enum = database_enum_fixture()
-      assert {:error, %Ecto.Changeset{}} = DatabaseEnums.update_database_enum(database_enum, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               DatabaseEnums.update_database_enum(database_enum, @invalid_attrs)
+
       assert database_enum == DatabaseEnums.get_database_enum!(database_enum.id)
     end
 
     test "delete_database_enum/1 deletes the database_enum" do
       database_enum = database_enum_fixture()
       assert {:ok, %DatabaseEnum{}} = DatabaseEnums.delete_database_enum(database_enum)
-      assert_raise Ecto.NoResultsError, fn -> DatabaseEnums.get_database_enum!(database_enum.id) end
+
+      assert_raise Ecto.NoResultsError, fn ->
+        DatabaseEnums.get_database_enum!(database_enum.id)
+      end
     end
 
     test "change_database_enum/1 returns a database_enum changeset" do
@@ -60,7 +70,7 @@ defmodule Schematic.DatabaseEnumsTest do
   end
 
   describe "enum_values" do
-    alias Schematic.DatabaseEnums.EnumValues
+    alias Schematic.DatabaseEnums
 
     import Schematic.DatabaseEnumsFixtures
 
@@ -79,7 +89,7 @@ defmodule Schematic.DatabaseEnumsTest do
     test "create_enum_values/1 with valid data creates a enum_values" do
       valid_attrs = %{value: "some value"}
 
-      assert {:ok, %EnumValues{} = enum_values} = DatabaseEnums.create_enum_values(valid_attrs)
+      assert {:ok, %EnumValue{} = enum_values} = DatabaseEnums.create_enum_values(valid_attrs)
       assert enum_values.value == "some value"
     end
 
@@ -91,19 +101,24 @@ defmodule Schematic.DatabaseEnumsTest do
       enum_values = enum_values_fixture()
       update_attrs = %{value: "some updated value"}
 
-      assert {:ok, %EnumValues{} = enum_values} = DatabaseEnums.update_enum_values(enum_values, update_attrs)
+      assert {:ok, %EnumValues{} = enum_values} =
+               DatabaseEnums.update_enum_values(enum_values, update_attrs)
+
       assert enum_values.value == "some updated value"
     end
 
     test "update_enum_values/2 with invalid data returns error changeset" do
       enum_values = enum_values_fixture()
-      assert {:error, %Ecto.Changeset{}} = DatabaseEnums.update_enum_values(enum_values, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               DatabaseEnums.update_enum_values(enum_values, @invalid_attrs)
+
       assert enum_values == DatabaseEnums.get_enum_values!(enum_values.id)
     end
 
     test "delete_enum_values/1 deletes the enum_values" do
       enum_values = enum_values_fixture()
-      assert {:ok, %EnumValues{}} = DatabaseEnums.delete_enum_values(enum_values)
+      assert {:ok, %EnumValue{}} = DatabaseEnums.delete_enum_values(enum_values)
       assert_raise Ecto.NoResultsError, fn -> DatabaseEnums.get_enum_values!(enum_values.id) end
     end
 
@@ -118,7 +133,16 @@ defmodule Schematic.DatabaseEnumsTest do
 
     import Schematic.DatabaseEnumsFixtures
 
-    @invalid_attrs %{description: nil, is_unique: nil, column_name: nil, array_depth: nil, is_primary_key: nil, is_nullable: nil, deleted: nil, deleted_at: nil}
+    @invalid_attrs %{
+      description: nil,
+      is_unique: nil,
+      column_name: nil,
+      array_depth: nil,
+      is_primary_key: nil,
+      is_nullable: nil,
+      deleted: nil,
+      deleted_at: nil
+    }
 
     test "list_enum_columns/0 returns all enum_columns" do
       enum_column = enum_column_fixture()
@@ -131,7 +155,16 @@ defmodule Schematic.DatabaseEnumsTest do
     end
 
     test "create_enum_column/1 with valid data creates a enum_column" do
-      valid_attrs = %{description: "some description", is_unique: true, column_name: "some column_name", array_depth: 42, is_primary_key: true, is_nullable: true, deleted: true, deleted_at: ~U[2023-09-04 17:06:00Z]}
+      valid_attrs = %{
+        description: "some description",
+        is_unique: true,
+        column_name: "some column_name",
+        array_depth: 42,
+        is_primary_key: true,
+        is_nullable: true,
+        deleted: true,
+        deleted_at: ~U[2023-09-04 17:06:00Z]
+      }
 
       assert {:ok, %EnumColumn{} = enum_column} = DatabaseEnums.create_enum_column(valid_attrs)
       assert enum_column.description == "some description"
@@ -150,9 +183,21 @@ defmodule Schematic.DatabaseEnumsTest do
 
     test "update_enum_column/2 with valid data updates the enum_column" do
       enum_column = enum_column_fixture()
-      update_attrs = %{description: "some updated description", is_unique: false, column_name: "some updated column_name", array_depth: 43, is_primary_key: false, is_nullable: false, deleted: false, deleted_at: ~U[2023-09-05 17:06:00Z]}
 
-      assert {:ok, %EnumColumn{} = enum_column} = DatabaseEnums.update_enum_column(enum_column, update_attrs)
+      update_attrs = %{
+        description: "some updated description",
+        is_unique: false,
+        column_name: "some updated column_name",
+        array_depth: 43,
+        is_primary_key: false,
+        is_nullable: false,
+        deleted: false,
+        deleted_at: ~U[2023-09-05 17:06:00Z]
+      }
+
+      assert {:ok, %EnumColumn{} = enum_column} =
+               DatabaseEnums.update_enum_column(enum_column, update_attrs)
+
       assert enum_column.description == "some updated description"
       assert enum_column.is_unique == false
       assert enum_column.column_name == "some updated column_name"
@@ -165,7 +210,10 @@ defmodule Schematic.DatabaseEnumsTest do
 
     test "update_enum_column/2 with invalid data returns error changeset" do
       enum_column = enum_column_fixture()
-      assert {:error, %Ecto.Changeset{}} = DatabaseEnums.update_enum_column(enum_column, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               DatabaseEnums.update_enum_column(enum_column, @invalid_attrs)
+
       assert enum_column == DatabaseEnums.get_enum_column!(enum_column.id)
     end
 

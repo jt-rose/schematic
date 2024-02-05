@@ -15,15 +15,11 @@ defmodule SchematicWeb.ProjectsLive.Index do
 
   def mount(_params, session, socket) do
     u = Accounts.get_user_by_session_token(session["user_token"])
-    IO.inspect(u)
 
     projects =
       Queries.list_projects_with_databases(u.id)
 
-    IO.inspect(projects)
-
     names = projects |> Enum.map(fn item -> item.name end) |> Enum.join(", ")
-    IO.inspect(names)
     {:ok, assign(socket, projects: names, uid: u.id)}
   end
 end

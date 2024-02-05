@@ -52,22 +52,25 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     Map.put(table, :grid_width, table_width)
   end
 
+  # starting column is inclusive to width
   def get_column_end(table) do
-    grid_column_end = table.grid_column_start + table.grid_width
+    grid_column_end = table.grid_column_start + table.grid_width - 1
     Map.put(table, :grid_column_end, grid_column_end)
   end
 
+  # first row is table name, followed by a row for each column
   def get_row_end(table) do
     grid_row_end = table.grid_row_start + length(table.columns)
     Map.put(table, :grid_row_end, grid_row_end)
   end
 
-  def get_grid_buffer(table) do
+  def get_table_buffer(table) do
+    # TODO: should this be 2 spaces or just one?
     table
     |> Map.put(:top_buffer, table.grid_row_start - 2)
     |> Map.put(:bottom_buffer, table.grid_row_end + 2)
-    |> Map.put(:top_buffer, table.grid_column_start - 2)
-    |> Map.put(:top_buffer, table.grid_column_end + 2)
+    |> Map.put(:left_buffer, table.grid_column_start - 2)
+    |> Map.put(:right_buffer, table.grid_column_end + 2)
   end
 
   def format_table_style(table) do
@@ -99,7 +102,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     |> get_table_width
     |> get_column_end
     |> get_row_end
-    |> get_grid_buffer
+    |> get_table_buffer
     |> format_table_style
   end
 end

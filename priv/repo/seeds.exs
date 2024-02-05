@@ -113,8 +113,6 @@ IO.puts("Generated demo-project")
 IO.puts("Generated demo-database")
 
 # add database enums
-IO.inspect(demo_db)
-
 {:ok, season_enum} =
   DatabaseEnums.create_database_enum(%{
     project_database_id: demo_db.id,
@@ -360,9 +358,6 @@ result =
       ]
   )
 
-IO.puts("INSERTED:")
-IO.inspect(result)
-
 [rels] = Repo.all(TableRelationship)
 
 IO.puts(
@@ -392,9 +387,6 @@ result =
       preload: [constraint_columns: :table_column]
   )
 
-IO.puts("INSERTED:")
-IO.inspect(result)
-
 # set up sql-generated data
 Repo.insert(%GeneratedColumn{
   database_table: authors_table,
@@ -419,9 +411,6 @@ result =
     from g in GeneratedColumn,
       preload: [generated_inputs: :table_column]
   )
-
-IO.puts("INSERTED:")
-IO.inspect(result)
 
 # create sql functions
 {:ok, trim_whitespace_fn} =
@@ -467,9 +456,6 @@ result =
       preload: [:sql_function, :sql_function_inputs]
   )
 
-IO.puts("INSERTED:")
-IO.inspect(result)
-
 # insert multicolumn indexes
 {:ok, unique_title_edition_index} =
   Repo.insert(%TableIndex{
@@ -490,12 +476,6 @@ result =
     from mc_idx in TableIndex,
       preload: [:database_table, index_columns: :table_column]
   )
-
-IO.puts("INSERTED:")
-IO.inspect(result)
-
-IO.puts("TESTING BIG QUERY")
-IO.inspect(authors_table.id)
 
 # columns =
 #   Repo.all(

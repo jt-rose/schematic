@@ -8,6 +8,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   import SchematicWeb.DatabaseLive.Pathfinder
   import SchematicWeb.DatabaseLive.GridLayout
   import SchematicWeb.DatabaseLive.DbTable
+  import SchematicWeb.DatabaseLive.BlockedTiles
 
   @grid_tyle_length 3.5
   # @table_width 6
@@ -16,13 +17,14 @@ defmodule SchematicWeb.DatabaseLive.Index do
   def render(assigns) do
     ~H"""
     <h1><%= @db_name %></h1>
-    <.vertical_line col={1} row={1} />
     <.grid_layout style={@grid_style}>
       <%= for tb <- @tables do %>
         <.db_table table={tb} db_id={@db_id} style={tb.style} />
       <% end %>
-      <%= for connector <- @connectors do %>
-        <.connector orientation={connector.orientation} col={connector.col} row={connector.row} />
+      <%= for connector_set <- @connectors do %>
+        <%= for connector <- connector_set do %>
+          <.connector orientation={connector.edges} pos={connector.pos} />
+        <% end %>
       <% end %>
     </.grid_layout>
 
@@ -43,25 +45,34 @@ defmodule SchematicWeb.DatabaseLive.Index do
 
   def mount(%{"id" => id} = _params, _session, socket) do
     db = Queries.list_db_tables(id) |> Enum.at(0)
-    tables = db.database_tables |> Enum.map(&format_table/1)
-    connectors = generate_connectors(db)
-    grid_style = format_grid_style(40, 40)
 
-    IO.inspect(db.table_relationships)
+    # format tables and db
+    tables = db.database_tables |> Enum.map(&format_table/1)
+    fmt_db = %{db | database_tables: tables}
+
+    # determine unavailable tiles
+    blocked_tiles = get_all_blocked_tiles(tables)
+    grid_borders = calculate_grid_borders(tables)
+    borders_and_blocked_tiles = blocked_tiles ++ grid_borders
+
+    # generate connecting lines for table relationships
+    connectors = generate_connectors(fmt_db, borders_and_blocked_tiles)
+    # format grid styling
+    # TODO: update hardcoded grid size
+    grid_style = format_grid_style(40, 40)
 
     socket =
       assign(socket,
         db_id: id,
         db_name: db.name,
         tables: tables,
-        # TODO: handle enum + generated columns
+        blocked_tiles: borders_and_blocked_tiles,
         relationships: db.table_relationships,
         grid_style: grid_style,
         connectors: connectors,
         selected_column: nil
       )
 
-    db |> calculate_grid_borders |> IO.inspect()
     {:ok, socket}
   end
 

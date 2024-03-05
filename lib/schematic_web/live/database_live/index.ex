@@ -1,4 +1,5 @@
 defmodule SchematicWeb.DatabaseLive.Index do
+  alias Schematic.DatabaseTables
   use SchematicWeb, :live_view
 
   # alias Schematic.Projects
@@ -17,7 +18,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   def render(assigns) do
     ~H"""
     <h1><%= @db_name %></h1>
-    <.grid_layout style={@grid_style}>
+    <.grid_layout style={@grid_style} blocked_tiles={@blocked_tiles} borders={@grid_borders}>
       <%= for tb <- @tables do %>
         <.db_table table={tb} db_id={@db_id} style={tb.style} />
       <% end %>
@@ -44,7 +45,13 @@ defmodule SchematicWeb.DatabaseLive.Index do
   end
 
   def mount(%{"id" => id} = _params, _session, socket) do
-    db = Queries.list_db_tables(id) |> Enum.at(0)
+    socket = format_db_data_for_grid(id, socket)
+    for bt <- socket.assigns.blocked_tiles, do: IO.inspect(bt)
+    {:ok, socket}
+  end
+
+  def format_db_data_for_grid(db_id, socket) do
+    db = Queries.list_db_tables(db_id) |> Enum.at(0)
 
     # format tables and db
     tables = db.database_tables |> Enum.map(&format_table/1)
@@ -53,7 +60,9 @@ defmodule SchematicWeb.DatabaseLive.Index do
     # determine unavailable tiles
     blocked_tiles = get_all_blocked_tiles(tables)
     grid_borders = calculate_grid_borders(tables)
-    borders_and_blocked_tiles = blocked_tiles ++ grid_borders
+    blocked_border_tiles = calculate_boundary_blocked_tiles(grid_borders)
+    # grid_borders
+    borders_and_blocked_tiles = blocked_tiles ++ blocked_border_tiles
 
     # generate connecting lines for table relationships
     connectors = generate_connectors(fmt_db, borders_and_blocked_tiles)
@@ -63,17 +72,19 @@ defmodule SchematicWeb.DatabaseLive.Index do
 
     socket =
       assign(socket,
-        db_id: id,
+        db_id: db_id,
         db_name: db.name,
         tables: tables,
-        blocked_tiles: borders_and_blocked_tiles,
+        # blocked_tiles: borders_and_blocked_tiles,
+        blocked_tiles: blocked_tiles,
+        grid_borders: grid_borders,
         relationships: db.table_relationships,
         grid_style: grid_style,
         connectors: connectors,
         selected_column: nil
       )
 
-    {:ok, socket}
+    socket
   end
 
   def handle_params(params, _uri, socket) do
@@ -101,6 +112,22 @@ defmodule SchematicWeb.DatabaseLive.Index do
 
   def handle_event("close_slide_over", _params, socket) do
     {:noreply, push_patch(socket, to: ~p"/database/#{socket.assigns.db_id}")}
+  end
+
+  def handle_event("update_position", %{"pos" => [c, r], "table_id" => table_id}, socket) do
+    # %{table_id: id, pos: [col, row]}
+    IO.puts("HELLO FROM CLIENT")
+    IO.inspect(c)
+    IO.inspect(r)
+    IO.inspect(table_id)
+    dbt = DatabaseTables.get_database_table!(table_id)
+
+    # TODO - confirm not in blocked tiles
+
+    # DatabaseTables.update_database_table(dbt, %{grid_column_start: 3, grid_row_start: 3})
+    DatabaseTables.update_database_table(dbt, %{grid_column_start: c, grid_row_start: r})
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
   end
 
   # TODO: add bad route fallback

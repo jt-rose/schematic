@@ -14,7 +14,18 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
 
   def grid_layout(assigns) do
     ~H"""
-    <div style={@style} class="bg-teal-600 ">
+    <div
+      id="schematic-grid-layout"
+      style={@style}
+      class="bg-teal-600"
+      phx-hook="GridHover"
+      data-blockedtiles={encode_blocked_tiles(@blocked_tiles)}
+      data-topborder={@borders.top_buffer}
+      data-rightborder={@borders.right_buffer}
+      data-bottomborder={@borders.bottom_buffer}
+      data-leftborder={@borders.left_buffer}
+    >
+      <div id="grid-hover-tile" class="hidden border-2 border-teal-400"></div>
       <%!-- <%= for column <- 1..@column_length do %>
         <%= for row <- 1..@row_length do %>
           <.grid_tile label={"#{column}-#{row}"} column={column} row={row} />
@@ -23,6 +34,12 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
       <%= render_slot(@inner_block) %>
     </div>
     """
+  end
+
+  def encode_blocked_tiles(blocked_tiles) do
+    blocked_tiles
+    |> Enum.map(fn {col, row} -> [col, row] end)
+    |> Jason.encode!()
   end
 
   def format_grid_style(column_length, row_length) do
@@ -90,6 +107,7 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
     tables
     |> Enum.reduce(@default_grid, fn x, acc -> get_outermost_boundary(x, acc) end)
     |> add_grid_buffer
-    |> calculate_boundary_blocked_tiles
+
+    # |> calculate_boundary_blocked_tiles
   end
 end

@@ -5,12 +5,27 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   @grid_tyle_length 3.5
   # @table_width 6
   @unit "em"
+  @min_width 5
+  @max_width 15
 
   def db_table(assigns) do
     ~H"""
-    <.table draggable="true" style={@style}>
+    <.table
+      draggable="true"
+      phx-hook="Drag"
+      id={"table-main-#{@table.id}"}
+      data-tabledims={
+        Jason.encode!(%{
+          grid_row_start: @table.grid_row_start,
+          grid_row_end: @table.grid_row_end,
+          grid_column_start: @table.grid_column_start,
+          grid_column_end: @table.grid_column_end
+        })
+      }
+      style={@style}
+    >
       <.tr style="height:3.5em;">
-        <.th>
+        <.th draggable class="cursor-crosshair" phx-hook="Hello" id={"table-header-#{@table.id}"}>
           <div class="flex justify-between">
             <span><%= @table.name %></span>
             <span class="rounded hover:cursor-pointer hover:bg-slate-600 hover:text-blue-500">
@@ -23,7 +38,6 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
         </.th>
       </.tr>
       <%= for column <- @table.columns do %>
-        <%!-- <%= for column <- @table.table_columns do %> --%>
         <.tr
           style="height:3.5em;"
           class="hover:bg-slate-600 hover:cursor-pointer"
@@ -46,6 +60,14 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   def convert_width_enum("wide"), do: 7
   def convert_width_enum("normal"), do: 5
   def convert_width_enum(_), do: 5
+
+  # def convert_table_width(table) do
+  #   cond do
+  #     table.grid_width < @min_width -> @min_width
+  #     table.grid_width > @max_width -> @max_width
+  #     true -> table.grid_width
+  #   end
+  # end
 
   def get_table_width(table) do
     table_width = convert_width_enum(table.grid_width)

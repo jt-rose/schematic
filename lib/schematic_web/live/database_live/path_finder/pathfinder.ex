@@ -2,8 +2,9 @@ defmodule SchematicWeb.DatabaseLive.Pathfinder do
   alias SchematicWeb.DatabaseLive.PathFinder
 
   def generate_connectors(db, blocked_tiles) do
-    for rel <- db.table_relationships,
-        do: trace_path(db, rel, blocked_tiles)
+    db.table_relationships
+    |> Enum.map(fn rel -> trace_path(rel, db, blocked_tiles) end)
+    |> Enum.filter(fn x -> x != nil end)
   end
 
   # get leftside starting position of PK-FK columns
@@ -11,7 +12,7 @@ defmodule SchematicWeb.DatabaseLive.Pathfinder do
   # determine left-right balance based on distance
   # add column-width for right-side
   # use that to determine from value of first step
-  def trace_path(db, table_relationship, blocked_tiles) do
+  def trace_path(table_relationship, db, blocked_tiles) do
     # get pk and fk tables
     pk_id = table_relationship.primary_key_column_id
     fk_id = table_relationship.foreign_key_column_id

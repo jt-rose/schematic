@@ -8,8 +8,7 @@ defmodule SchematicWeb.DatabaseLive.PathFinder.Bookends do
   end
 
   def get_rightside_pos(table, id) do
-    # TODO: add variable width
-    column = table.grid_column_start + 5
+    column = table.grid_column_start + table.grid_width
     row = table.grid_row_start + Enum.find_index(table.columns, fn c -> c.id == id end) + 1
 
     # TODO: nil handling?

@@ -1,0 +1,41 @@
+import { getGridCoordinates, getGridTilePos } from "./utils/grid";
+
+const getGridHoverTile = () => {
+  return document.getElementById("grid-hover-tile");
+};
+
+const gridHoverHandler = {
+  mounted() {
+    this.el.addEventListener("mouseover", (e) => {
+      const gridCoords = getGridCoordinates();
+      const [col, row] = getGridTilePos(gridCoords, {
+        x: e.clientX,
+        y: e.clientY,
+      });
+      const gridHoverTile = getGridHoverTile();
+      gridHoverTile.style.display = "block";
+      gridHoverTile.style.gridColumn = col;
+      gridHoverTile.style.gridRow = row;
+      //   console.log("enter!");
+    });
+
+    this.el.addEventListener("mouseleave", (e) => {
+      const gridHoverTile = getGridHoverTile();
+      gridHoverTile.style.display = "none";
+      //   gridHoverTile.style.gridColumn = "1";
+      //   gridHoverTile.style.gridRow = "1";
+      //   console.log("leave!");
+    });
+
+    this.el.addEventListener("click", (e) => {
+      const gridCoords = getGridCoordinates();
+      const [col, row] = getGridTilePos(gridCoords, {
+        x: e.clientX,
+        y: e.clientY,
+      });
+      alert(`COLUMN: ${col}, ROW: ${row}`);
+    });
+  },
+};
+
+export default gridHoverHandler;

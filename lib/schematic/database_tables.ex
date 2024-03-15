@@ -101,4 +101,34 @@ defmodule Schematic.DatabaseTables do
   def change_database_table(%DatabaseTable{} = database_table, attrs \\ %{}) do
     DatabaseTable.changeset(database_table, attrs)
   end
+
+  def repos_and_bump(table_id, {_c, r}) when r == 7 do
+    buffer = 20 - r
+
+    Repo.transaction(fn ->
+      upd =
+        from Schematic.DatabaseTables.DatabaseTable,
+          where: [id: ^table_id],
+          update: [set: [grid_row_start: ^r]]
+
+      {1, _} = Repo.update_all(upd, [])
+
+      q =
+        from Schematic.DatabaseTables.DatabaseTable,
+          where: [project_database_id: 1],
+          update: [inc: [grid_row_start: ^buffer]]
+
+      {_a, _} = Repo.update_all(q, [])
+      # bump()
+    end)
+  end
+
+  def bump(num) do
+    q =
+      from Schematic.DatabaseTables.DatabaseTable,
+        where: [project_database_id: 1],
+        update: [inc: [grid_column_start: ^num]]
+
+    Repo.update_all(q, [])
+  end
 end

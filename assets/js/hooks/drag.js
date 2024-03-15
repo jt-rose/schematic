@@ -7,14 +7,6 @@ import {
 
 const dragHandler = {
   mounted() {
-    // this.el.addEventListener("mousedown", (e) => {
-    //     const gridCoords = getGridCoordinates();
-    //     const elCoords = getElemCoordinates(this.el);
-    //     const [col, row] = getGridTilePos(gridCoords, elCoords);
-    //     console.log("COLUMN:: " + col + ", ROW:: " + row);
-    //     console.log("dragSTART!");
-    //   });
-
     this.el.addEventListener("dragstart", (e) => {
       const gridCoords = getGridCoordinates();
       const elCoords = getElemCoordinates(this.el);
@@ -26,12 +18,7 @@ const dragHandler = {
       });
       console.log(getGridTilePos(gridCoords, { x: e.clientX, y: e.clientY }));
 
-      const {
-        grid_row_start,
-        // grid_row_end,
-        grid_column_start,
-        // grid_column_end,
-      } = getTableDataset(e);
+      const { grid_row_start, grid_column_start } = getTableDataset(e);
 
       const rowOffest = clicked_row - grid_row_start;
       const columnOffset = clicked_col - grid_column_start;
@@ -96,16 +83,22 @@ const dragHandler = {
 
       delete e.target.dataset.rowOffest;
       delete e.target.dataset.columnOffest;
-      if (!isBlocked) {
-        //TODO: UPDATE locally (optimistic) so no lag / jitters
-        const table_id = Number(e.target.id.replace("table-main-", ""));
-        this.pushEvent("update_position", {
-          table_id: table_id,
-          pos: [col - columnOffset, row - rowOffest],
-        });
-      } else {
+      if (isBlocked) {
         console.log("BLOCKED!!!");
+        return;
       }
+
+      if (isOutOfBounds(updatedTableArea)) {
+        console.log("OUT OF BOUNDS!");
+        return;
+      }
+
+      //TODO: UPDATE locally (optimistic) so no lag / jitters
+      const table_id = Number(e.target.id.replace("table-main-", ""));
+      this.pushEvent("update_position", {
+        table_id: table_id,
+        pos: [col - columnOffset, row - rowOffest],
+      });
     });
   },
 };
@@ -125,12 +118,6 @@ const getRange = (num1, num2) => {
   return spread;
 };
 
-//calc which tile click was started and adjust move calculation
-// get tabledims and calc width / height
-// filter old position out from blocked tiles
-// adjust new position based on #2 and check for blocked tiles
-// update
-
 const getTableDataset = (e) => {
   try {
     return JSON.parse(e.target.dataset.tabledims);
@@ -139,27 +126,9 @@ const getTableDataset = (e) => {
   }
 };
 
-// selected may be a higher value
-const getOffset = (table_start_pos, selected_pos) => {
-  return selected_pos - table_start_pos;
-  // let offset = 0
-  // if (num1 < num2) {
-  //     for (let i = num1; i < num2; i++) {
-  //         offset += 1
-  //     }
-  // } else if (num1 > num2) {
-  //     for (let i = num1; i > num2; i--) {
-  //         offset -= 1
-  //     }
-  // }
-
-  // return offset
-};
-
-const calcTableArea = (col_start, col_end, row_start, row_end) => {
+export const calcTableArea = (col_start, col_end, row_start, row_end) => {
   const columnRange = getRange(col_start, col_end);
   const rowRange = getRange(row_start, row_end);
-  //   console.log("COL + ROW RANGE::", columnRange, rowRange);
 
   const tableArea = [];
 
@@ -179,14 +148,38 @@ const comparePos = (pos1, pos2) => {
   return c1 === c2 && r1 === r2;
 };
 
-const isWithinBlockedTiles = (tableArea, blockedTiles) => {
-  //   console.log("TABLE AREA::");
-  //   console.log(tableArea);
-  //   const allPos = [...tableArea, ...blockedTiles];
-  //   return allPos.length !== [...new Set(allPos)].length;
-  return !!tableArea.find((area) =>
-    blockedTiles.find((bt) => comparePos(bt, area))
-  );
+export const isBlocked = (pos, blockedTiles) => {
+  return blockedTiles.find((bt) => comparePos(bt, pos));
+};
+
+export const isWithinBlockedTiles = (tableArea, blockedTiles) => {
+  return !!tableArea.find((area) => isBlocked(area, blockedTiles));
+};
+
+const isOutOfBounds = (tableArea) => {
+  //TODO: get from data attr
+  const boundaries = {
+    top: 0,
+    right: 100,
+    bottom: 100,
+    left: 0,
+  };
+
+  for (const area of tableArea) {
+    const column = area[0];
+
+    if (column <= boundaries.left || column >= boundaries.right) {
+      return true;
+    }
+
+    const row = area[1];
+
+    if (row <= boundaries.top || row >= boundaries.bottom) {
+      return true;
+    }
+  }
+
+  return false;
 };
 
 export default dragHandler;

@@ -2,14 +2,16 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
   use Phoenix.Component
   use PetalComponents
 
-  @grid_tyle_length 3.5
+  @grid_tile_length 3.5
   # @table_width 6
   @unit "em"
   @min_width 5
   @max_width 15
 
+  # TODO:: move calc style to render phase, include w/h adjustments
   def db_table(assigns) do
     ~H"""
+    <.table_buffer style={@buffer_style} />
     <.table
       draggable="true"
       phx-hook="Drag"
@@ -46,7 +48,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
           phx-value-cid={column.id}
         >
           <.td>
-            <div class="flex justify-between">
+            <div class="flex justify-between w-[200px]">
               <span><%= column.column_name %></span>
               <span>TYPE</span>
             </div>
@@ -54,6 +56,12 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
         </.tr>
       <% end %>
     </.table>
+    """
+  end
+
+  def table_buffer(assigns) do
+    ~H"""
+    <div class="hover:bg-teal-700" style={@style}></div>
     """
   end
 
@@ -76,30 +84,30 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
 
   # starting column is inclusive to width
   def get_column_end(table) do
-    grid_column_end = table.grid_column_start + table.grid_width - 1
+    grid_column_end = table.grid_column_start + table.grid_width
     Map.put(table, :grid_column_end, grid_column_end)
   end
 
   # first row is table name, followed by a row for each column
   def get_row_end(table) do
-    grid_row_end = table.grid_row_start + length(table.columns)
+    grid_row_end = table.grid_row_start + length(table.columns) + 1
     Map.put(table, :grid_row_end, grid_row_end)
   end
 
   def get_table_buffer(table) do
     # TODO: should this be 2 spaces or just one?
     table
-    |> Map.put(:top_buffer, table.grid_row_start - 2)
-    |> Map.put(:bottom_buffer, table.grid_row_end + 2)
-    |> Map.put(:left_buffer, table.grid_column_start - 2)
-    |> Map.put(:right_buffer, table.grid_column_end + 2)
+    |> Map.put(:top_buffer, table.grid_row_start - 1)
+    |> Map.put(:bottom_buffer, table.grid_row_end + 1)
+    |> Map.put(:left_buffer, table.grid_column_start - 1)
+    |> Map.put(:right_buffer, table.grid_column_end + 1)
   end
 
+  # width: #{@grid_tile_length * table.grid_width}#{@unit};
   def format_table_style(table) do
     style = "
-    width: #{@grid_tyle_length * table.grid_width}#{@unit};
+    width: #{@grid_tile_length * table.grid_width}#{@unit};
     grid-column-start: #{table.grid_column_start};
-    grid-column-end: #{table.grid_column_end};
     grid-row-start: #{table.grid_row_start};
     grid-row-end: #{table.grid_row_end};
     background: violet;
@@ -107,6 +115,22 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     "
 
     Map.put(table, :style, style)
+  end
+
+  #    width: #{@grid_tile_length * table.grid_width + 2}#{@unit};
+
+  def format_table_buffer_style(table) do
+    style = "
+    width: #{@grid_tile_length * (table.grid_width + 2)}#{@unit};
+    grid-column-start: #{table.left_buffer};
+    grid-row-start: #{table.top_buffer};
+    grid-row-end: #{table.bottom_buffer};
+    z-index: 5;
+    "
+
+    IO.inspect(style)
+
+    Map.put(table, :buffer_style, style)
   end
 
   # TODO: optimize to avoid rerender for every table update
@@ -126,5 +150,13 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
     |> get_row_end
     |> get_table_buffer
     |> format_table_style
+    |> format_table_buffer_style
   end
+
+  # def adjust_table_positions(width_adjustment, height_adjustment, table) do
+  #   { table | }
+  # end
+  # TODO: calc grid border from table positions
+  # TODO: calc width / height adjustment
+  # TODO: apply adjustment to table positions when formatting table
 end

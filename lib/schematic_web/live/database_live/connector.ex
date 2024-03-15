@@ -96,6 +96,7 @@ defmodule SchematicWeb.DatabaseLive.Connector do
     "
     grid-column-start: #{col};
     grid-row-start: #{row};
+    z-index: 7;
     "
   end
 end

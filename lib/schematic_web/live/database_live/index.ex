@@ -10,7 +10,7 @@ defmodule SchematicWeb.DatabaseLive.Index do
   import SchematicWeb.DatabaseLive.DbTable
   import SchematicWeb.DatabaseLive.BlockedTiles
 
-  @grid_tyle_length 3.5
+  @grid_tile_length 3.5
   # @table_width 6
   @unit "em"
 

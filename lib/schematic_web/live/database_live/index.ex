@@ -1,5 +1,4 @@
 defmodule SchematicWeb.DatabaseLive.Index do
-  alias Schematic.DatabaseTables
   use SchematicWeb, :live_view
 
   # alias Schematic.Projects
@@ -18,9 +17,12 @@ defmodule SchematicWeb.DatabaseLive.Index do
   def render(assigns) do
     ~H"""
     <h1><%= @db_name %></h1>
+    <button phx-click="bump-up">UP</button>
+    <button phx-click="bump-down">DOWN</button>
+    <button phx-click="adjust">adjust</button>
     <.grid_layout style={@grid_style} blocked_tiles={@blocked_tiles} borders={@grid_borders}>
       <%= for tb <- @tables do %>
-        <.db_table table={tb} db_id={@db_id} style={tb.style} />
+        <.db_table table={tb} db_id={@db_id} style={tb.style} buffer_style={tb.buffer_style} />
       <% end %>
       <%= for connector_set <- @connectors do %>
         <%= for connector <- connector_set do %>
@@ -64,19 +66,21 @@ defmodule SchematicWeb.DatabaseLive.Index do
     # grid_borders
     borders_and_blocked_tiles = blocked_tiles ++ blocked_border_tiles
 
+    blocked_table_gutters = get_all_table_gutters(tables)
+
     # generate connecting lines for table relationships
     connectors = generate_connectors(fmt_db, borders_and_blocked_tiles)
     # format grid styling
-    # TODO: update hardcoded grid size
-    grid_style = format_grid_style(40, 40)
+    grid_width = grid_borders.right_buffer - grid_borders.left_buffer
+    grid_height = grid_borders.bottom_buffer - grid_borders.top_buffer
+    grid_style = format_grid_style(grid_width, grid_height)
 
     socket =
       assign(socket,
         db_id: db_id,
         db_name: db.name,
         tables: tables,
-        # blocked_tiles: borders_and_blocked_tiles,
-        blocked_tiles: blocked_tiles,
+        blocked_tiles: blocked_tiles ++ blocked_table_gutters,
         grid_borders: grid_borders,
         relationships: db.table_relationships,
         grid_style: grid_style,
@@ -106,6 +110,29 @@ defmodule SchematicWeb.DatabaseLive.Index do
     end
   end
 
+  def handle_event("bump-up", _, socket) do
+    IO.puts("BUMP UP")
+
+    Schematic.DatabaseTables.bump(1)
+
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
+  end
+
+  def handle_event("bump-down", _, socket) do
+    IO.puts("BUMP DOWN")
+    Schematic.DatabaseTables.bump(-1)
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
+  end
+
+  def handle_event("adjust", _, socket) do
+    IO.puts("ADJUST")
+    Schematic.DatabaseTables.repos_and_bump(1, {2, 7})
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
+  end
+
   def handle_event("show_config_panel", %{"dbid" => db_id, "cid" => column_id}, socket) do
     {:noreply, push_patch(socket, to: ~p"/database/#{db_id}/column/#{column_id}")}
   end
@@ -120,12 +147,13 @@ defmodule SchematicWeb.DatabaseLive.Index do
     IO.inspect(c)
     IO.inspect(r)
     IO.inspect(table_id)
-    dbt = DatabaseTables.get_database_table!(table_id)
+    dbt = Schematic.DatabaseTables.get_database_table!(table_id)
 
     # TODO - confirm not in blocked tiles
 
     # DatabaseTables.update_database_table(dbt, %{grid_column_start: 3, grid_row_start: 3})
-    DatabaseTables.update_database_table(dbt, %{grid_column_start: c, grid_row_start: r})
+    Schematic.DatabaseTables.update_database_table(dbt, %{grid_column_start: c, grid_row_start: r})
+
     updated_socket = format_db_data_for_grid(1, socket)
     {:noreply, updated_socket}
   end

@@ -1,14 +1,16 @@
 defmodule SchematicWeb.DatabaseLive.GridLayout do
   use Phoenix.Component
 
-  @grid_tyle_length 3.5
+  @grid_tile_length 3.5
   @table_width 6
   @unit "em"
 
   @default_grid %{
     top_buffer: 1,
-    right_buffer: 101,
-    bottom_buffer: 101,
+    # 101,
+    right_buffer: 40,
+    # 101,
+    bottom_buffer: 40,
     left_buffer: 1
   }
 
@@ -20,21 +22,32 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
       class="bg-teal-600"
       phx-hook="GridHover"
       data-blockedtiles={encode_blocked_tiles(@blocked_tiles)}
-      data-topborder={@borders.top_buffer}
       data-rightborder={@borders.right_buffer}
       data-bottomborder={@borders.bottom_buffer}
-      data-leftborder={@borders.left_buffer}
     >
       <div id="grid-hover-tile" class="hidden border-2 border-teal-400"></div>
-      <%!-- <%= for column <- 1..@column_length do %>
-        <%= for row <- 1..@row_length do %>
-          <.grid_tile label={"#{column}-#{row}"} column={column} row={row} />
-        <% end %>
-      <% end %> --%>
       <%= render_slot(@inner_block) %>
     </div>
     """
   end
+
+  # def grid_tile(assigns) do
+  #   ~H"""
+  #   <div style={format_grid_tile_style(@column, @row)} class="hover:border-2 hover:border-blue-500">
+  #     <%!-- <%= @label %> --%>
+  #   </div>
+  #   """
+  # end
+
+  # def format_grid_tile_style(column, row) do
+  #   "
+  #   width: 3.5em;
+  #   grid-column-start: #{column};
+  #   grid-row-start: #{row};
+  #   background: violet;
+  #   z-index: 10;
+  #   "
+  # end
 
   def encode_blocked_tiles(blocked_tiles) do
     blocked_tiles
@@ -44,19 +57,19 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
 
   def format_grid_style(column_length, row_length) do
     "
-    width:#{column_length * @grid_tyle_length}em;
-    height:#{row_length * @grid_tyle_length}em;
+    width:#{column_length * @grid_tile_length}em;
+    height:#{row_length * @grid_tile_length}em;
     display:grid;
-    grid-template-columns: repeat(#{column_length}, #{@grid_tyle_length}em);
-    grid-template-rows: repeat(#{row_length}, #{@grid_tyle_length}em);
+    grid-template-columns: repeat(#{column_length}, #{@grid_tile_length}em);
+    grid-template-rows: repeat(#{row_length}, #{@grid_tile_length}em);
     "
   end
 
   def get_outermost_boundary(boundary, table) do
-    top = min(boundary.top_buffer, table.top_buffer)
+    top = 1
     right = max(boundary.right_buffer, table.right_buffer)
     bottom = max(boundary.bottom_buffer, table.bottom_buffer)
-    left = min(boundary.left_buffer, table.left_buffer)
+    left = 1
 
     %{
       top_buffer: top,
@@ -79,10 +92,10 @@ defmodule SchematicWeb.DatabaseLive.GridLayout do
   # add additional space around outermost boundaries for adding new tables / readability
   def add_grid_buffer(boundary) do
     %{
-      top_buffer: boundary.top_buffer - 20,
+      top_buffer: boundary.top_buffer,
       right_buffer: boundary.right_buffer + 20,
       bottom_buffer: boundary.bottom_buffer + 20,
-      left_buffer: boundary.left_buffer - 20
+      left_buffer: boundary.left_buffer
     }
   end
 

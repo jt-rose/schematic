@@ -30,6 +30,7 @@ defmodule SchematicWeb.DatabaseLive.DbTable do
         <.th draggable class="cursor-crosshair" phx-hook="Hello" id={"table-header-#{@table.id}"}>
           <div class="flex justify-between">
             <span><%= @table.name %></span>
+            <span phx-value-id={@table.id} phx-click="delete_table">X</span>
             <span class="rounded hover:cursor-pointer hover:bg-slate-600 hover:text-blue-500">
               <.icon
                 name={:adjustments_horizontal}

@@ -1,4 +1,5 @@
 defmodule SchematicWeb.DatabaseLive.Index do
+  alias Schematic.DatabaseTables
   use SchematicWeb, :live_view
 
   # alias Schematic.Projects
@@ -153,6 +154,27 @@ defmodule SchematicWeb.DatabaseLive.Index do
 
     # DatabaseTables.update_database_table(dbt, %{grid_column_start: 3, grid_row_start: 3})
     Schematic.DatabaseTables.update_database_table(dbt, %{grid_column_start: c, grid_row_start: r})
+
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
+  end
+
+  def handle_event("add_table", %{"pos" => [c, r]}, socket) do
+    DatabaseTables.create_database_table(%{
+      name: "example",
+      grid_column_start: c,
+      grid_row_start: r,
+      project_database_id: socket.assigns.db_id
+    })
+
+    updated_socket = format_db_data_for_grid(1, socket)
+    {:noreply, updated_socket}
+  end
+
+  def handle_event("delete_table", %{"id" => id}, socket) do
+    id
+    |> DatabaseTables.get_database_table!()
+    |> DatabaseTables.delete_database_table()
 
     updated_socket = format_db_data_for_grid(1, socket)
     {:noreply, updated_socket}
